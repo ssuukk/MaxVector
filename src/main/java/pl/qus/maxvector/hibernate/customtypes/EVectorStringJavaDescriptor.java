@@ -1,0 +1,63 @@
+package pl.qus.maxvector.hibernate.customtypes;
+
+import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
+import org.hibernate.type.descriptor.java.ImmutableMutabilityPlan;
+import org.hibernate.type.descriptor.spi.JdbcRecommendedSqlTypeMappingContext;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
+
+
+public class EVectorStringJavaDescriptor extends AbstractTypeDescriptor<EVector> {
+
+    public static final EVectorStringJavaDescriptor INSTANCE =
+            new EVectorStringJavaDescriptor();
+
+    public EVectorStringJavaDescriptor() {
+        super(EVector.class, ImmutableMutabilityPlan.INSTANCE);
+    }
+
+    @Override
+    public String toString(EVector value) {
+        return "'"+value.toString()+"'";
+    }
+
+    @Override
+    public EVector fromString(String string) {
+        return EVector.from(string);
+    }
+
+    // unwrap() is called during PreparedStatement binding to convert LocalDate to a String type, which is mapped to VARCHAR.
+    // nasz wektor na SQL
+    @Override
+    public <X> X unwrap(EVector value, Class<X> type, WrapperOptions options) {
+
+        if (value == null)
+            return null;
+
+//        return (X)("Kupsko"+type.getCanonicalName());
+
+        if (String.class.isAssignableFrom(type))
+            return (X) toString(value);
+
+        throw unknownUnwrap(type);
+    }
+
+    // Likewise, wrap() is called during ResultSet retrieval to convert String to a Java LocalDate.
+    // sql na nasz wektor
+    @Override
+    public <X> EVector wrap(X value, WrapperOptions options) {
+        if (value == null)
+            return null;
+
+        if(value instanceof String)
+            return EVector.from((String) value);
+
+        throw unknownWrap(value.getClass());
+
+    }
+
+    @Override
+    public SqlTypeDescriptor getJdbcRecommendedSqlType(JdbcRecommendedSqlTypeMappingContext context) {
+        return super.getJdbcRecommendedSqlType(context);
+    }
+}

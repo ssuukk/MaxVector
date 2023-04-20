@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Embeddings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<h2>List of vector embeddings</h2>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Embedding</th>
+    </tr>
+
+    <tr th:each="emb : ${embeddings}">
+        <td th:text="${emb.id}">Id</td>
+        <td th:text="${emb.embedding}">Embedding</td>
+    </tr>
+</table>
+
+</body>
+</html>
