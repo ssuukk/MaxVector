@@ -4,7 +4,10 @@ import org.hibernate.annotations.Type
 import pl.qus.maxvector.hibernate.customtypes.EVector
 import javax.persistence.*
 
-// to jest po prostu model danych w bazie, potrafi sam zrobić tabele, jakby co
+///////////////////////////////////////////////////////////////////////////
+// MODEL - to jest po prostu model danych w bazie, potrafi sam zrobić tabele, jakby co
+///////////////////////////////////////////////////////////////////////////
+
 @Entity
 @Table(name = "items")
 class Embedding {

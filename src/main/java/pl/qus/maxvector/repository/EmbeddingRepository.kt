@@ -6,17 +6,19 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import pl.qus.maxvector.model.Embedding
 
-/*
-To nam załatwia dostęp do bazy danych City, z różnymi metodami:
-findAll, findById, delete, count etc.
+///////////////////////////////////////////////////////////////////////////
+// REPOSITORY - gada z bazą danych
+///////////////////////////////////////////////////////////////////////////
 
-W CityService injectujemy je przez
-    @Autowired
-    private CityRepository repository;
-
- */
 @Repository
 interface EmbeddingRepository : CrudRepository<Embedding?, Long?> {
+    /*
+    To nam załatwia dostęp do bazy danych z różnymi metodami:
+    findAll, findById, delete, count etc.
+
+    Ponadto możemy dodać swoje:
+     */
+
     @Query(value = "SELECT * FROM items ORDER BY embedding <-> CAST(:vec AS vector) LIMIT :pval", nativeQuery = true)
     fun findClosestEuclid(@Param("vec") v: String?, @Param("pval") p: Int): Iterable<Embedding>
 

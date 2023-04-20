@@ -1,43 +1,32 @@
-package pl.qus.maxvector.controller;
+package pl.qus.maxvector.controller
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import pl.qus.maxvector.hibernate.customtypes.EVector;
-import pl.qus.maxvector.model.Embedding;
-import pl.qus.maxvector.service.IEmbeddingService;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.GetMapping
+import pl.qus.maxvector.hibernate.customtypes.EVector
+import pl.qus.maxvector.service.IEmbeddingService
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+///////////////////////////////////////////////////////////////////////////
+// KONTROLER - wyświetla strony WWW
+///////////////////////////////////////////////////////////////////////////
 
 @Controller
-public class EmbController {
-
+class EmbController {
     @Autowired
-    private IEmbeddingService embeddingService;
-
-    @GetMapping("/emb")
-    public String findEmbeddings(Model model) {
-
-        var embeddings = (List<Embedding>) embeddingService.findAll();
-
-        model.addAttribute("embeddings", embeddings); // atrybut na stronie html
-
-        return "showEmbedding"; // to wkazuje nazwę pliku, w którym należy to osadzić
+    lateinit var embeddingService: IEmbeddingService
+    @GetMapping("/emb") // w jakiej ścieżce ukaze się stona
+    fun findEmbeddings(model: Model): String {
+        model.addAttribute("embeddings", embeddingService.findAll()) // atrybut na stronie html
+        return "showEmbedding" // to wkazuje nazwę pliku templeju, w którym należy to osadzić
     }
 
-    @GetMapping("/closest")
-    public String findClosest(Model model) {
-
-        var embeddings = (List<Embedding>) embeddingService.findClosest(new EVector(Arrays.asList(5.0f,6.0f,7.0f)));
-
-        model.addAttribute("embeddings", embeddings); // atrybut na stronie html
-
-        return "showEmbedding"; // to wkazuje nazwę pliku, w którym należy to osadzić
+    @GetMapping("/closest") // w jakiej ścieżce ukaze się stona
+    fun findClosest(model: Model): String {
+        model.addAttribute(
+            "embeddings", // atrybut na stronie html
+            embeddingService.findClosest(EVector(mutableListOf(5.0f, 6.0f, 7.0f)))
+        )
+        return "showEmbedding" // to wkazuje nazwę pliku templejtu, w którym należy to osadzić
     }
-
-
-
 }
