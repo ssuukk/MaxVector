@@ -1,13 +1,9 @@
-package pl.qus.maxvector.service;
+package pl.qus.maxvector.service
 
+import pl.qus.maxvector.hibernate.customtypes.EVector
+import pl.qus.maxvector.model.Embedding
 
-import pl.qus.maxvector.hibernate.customtypes.EVector;
-import pl.qus.maxvector.model.City;
-import pl.qus.maxvector.model.Embedding;
-
-import java.util.List;
-
-public interface IEmbeddingService {
-    List<Embedding> findAll();
-    List<Embedding> findClosest(EVector ev);
+interface IEmbeddingService {
+    fun findAll(): List<Embedding>
+    fun findClosest(ev: EVector): List<Embedding>
 }

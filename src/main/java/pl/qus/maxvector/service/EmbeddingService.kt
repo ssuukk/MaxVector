@@ -21,6 +21,8 @@ class EmbeddingService : IEmbeddingService {
         return repository!!.findAll() as List<Embedding>
     }
 
+
+
     override fun findClosest(v: EVector): List<Embedding> {
         return repository!!.findClosestEuclid(EVector(mutableListOf(4.0f, 5.0f, 6.0f)).toString(), 4).toMutableList()
         //return repository!!.findClosest(4).toMutableList()
