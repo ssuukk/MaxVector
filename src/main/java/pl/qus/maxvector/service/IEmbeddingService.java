@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface IEmbeddingService {
     List<Embedding> findAll();
-    List<Embedding> findClosest();
+    List<Embedding> findClosest(EVector ev);
 }

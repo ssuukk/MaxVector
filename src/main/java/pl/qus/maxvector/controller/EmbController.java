@@ -8,6 +8,8 @@ import pl.qus.maxvector.hibernate.customtypes.EVector;
 import pl.qus.maxvector.model.Embedding;
 import pl.qus.maxvector.service.IEmbeddingService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -29,7 +31,7 @@ public class EmbController {
     @GetMapping("/closest")
     public String findClosest(Model model) {
 
-        var embeddings = (List<Embedding>) embeddingService.findClosest();
+        var embeddings = (List<Embedding>) embeddingService.findClosest(new EVector(Arrays.asList(5.0f,6.0f,7.0f)));
 
         model.addAttribute("embeddings", embeddings); // atrybut na stronie html
 
