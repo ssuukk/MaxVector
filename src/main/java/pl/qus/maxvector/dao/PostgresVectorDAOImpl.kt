@@ -7,6 +7,7 @@ import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.EmbeddingRecord
 import java.lang.IllegalStateException
 import javax.persistence.EntityManager
+import javax.transaction.Transactional
 
 @Component
 class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager) : PostgresVectorDAO {
@@ -22,7 +23,7 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     override fun deleteVectorById(id: Long): Boolean {
 //        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
 //        logger.debug("======================================== $test")
-        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).resultList.size > 0
+        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
     }
 
 
@@ -31,14 +32,16 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
             throw IllegalStateException("Atempt to use ${emb.dimension}-dimension vector with $dimensions-dimension db!")
     }
 
+    @Transactional
     override fun insert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
         return dataSource.createNativeQuery(SQL_INSERT_VECTORS)
             .setParameter("emb", emb.embedding.toString())
             .setParameter("label", emb.label)
-            .resultList.size != 1
+            .executeUpdate() > 0
     }
 
+    @Transactional
     override fun upsert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
         return false
@@ -46,6 +49,7 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
 //            SQL_INSERT_VECTORS, emb.toString()
 //        ) > 0
     }
+    @Transactional
     override fun upsertAll(emb: List<EmbeddingRecord>): Boolean {
         TODO("Not yet implemented")
     }
