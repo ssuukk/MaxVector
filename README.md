@@ -9,8 +9,8 @@ MaxVector is a vector database created for AI applications, so you can use it ex
 embeddings and query closest ones by distance (using euclidean, cosine or inner product) or metadata.
 
 ## Any other features?
-Oh, sure. It can obtain embeddings automagically for you! With GraphQL interface it's enough to call this mutation to obtain embedding
-vectors for a list of words **straight into your database**:
+Oh, sure. It can obtain embeddings automagically for you! With GraphQL interface it's enough to call this mutation to 
+obtain embedding vectors for a list of words from OpenAI **straight into your database**:
 
     mutation storeEmbedding {
       storeEmbedding(queries: ["dog", "shark", "parrot"]) {
