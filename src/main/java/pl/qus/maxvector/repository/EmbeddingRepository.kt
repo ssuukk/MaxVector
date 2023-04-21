@@ -4,14 +4,14 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import pl.qus.maxvector.model.Embedding
+import pl.qus.maxvector.model.DAOEmbedding
 
 ///////////////////////////////////////////////////////////////////////////
 // REPOSITORY - gada z bazą danych
 ///////////////////////////////////////////////////////////////////////////
 
 @Repository
-interface EmbeddingRepository : CrudRepository<Embedding?, Long?> {
+interface EmbeddingRepository : CrudRepository<DAOEmbedding?, Long?> {
     /*
     To nam załatwia dostęp do bazy danych z różnymi metodami:
     findAll, findById, delete, count etc.
@@ -20,16 +20,16 @@ interface EmbeddingRepository : CrudRepository<Embedding?, Long?> {
      */
 
     @Query(value = "SELECT * FROM items ORDER BY embedding <-> CAST(:vec AS vector) LIMIT :pval", nativeQuery = true)
-    fun findClosestEuclid(@Param("vec") v: String?, @Param("pval") p: Int): Iterable<Embedding>
+    fun findClosestEuclid(@Param("vec") v: String?, @Param("pval") p: Int): Iterable<DAOEmbedding>
 
     @Query(value = "SELECT * FROM items ORDER BY embedding <#> CAST(:vec AS vector) LIMIT :pval", nativeQuery = true)
-    fun findClosestInnerProd(@Param("vec") v: String?, @Param("pval") p: Int): Iterable<Embedding>
+    fun findClosestInnerProd(@Param("vec") v: String?, @Param("pval") p: Int): Iterable<DAOEmbedding>
 
     @Query(value = "SELECT * FROM items ORDER BY embedding <=> CAST(:vec AS vector) LIMIT :pval", nativeQuery = true)
     fun findClosestCosine(
         @Param("vec") v: String?,
         @Param("pval") p: Int
-    ): Iterable<Embedding>
+    ): Iterable<DAOEmbedding>
 
 // upsert: INSERT INTO items (id, embedding) VALUES (1, '[1,2,3]'), (2, '[4,5,6]')
     //    ON CONFLICT (id) DO UPDATE SET embedding = EXCLUDED.embedding;

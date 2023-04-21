@@ -11,7 +11,8 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 // https://medium.com/@diee.roman.22/using-custom-hibernate-types-in-native-queries-364f9120b79a
-public class EVectorType implements UserType {
+// to rzekomo umożliwia automatyczne mapowanie do wektora, zamiast castu ze stringa
+public class PostgresVectorType implements UserType {
     //  sqlTypes() : Tells Hibernate the SQL type we are mapping. In this case, I am using java.sql.Types.ARRAY that is actually the type with which the driver is gonna identify the field roles.
     @Override
     public int[] sqlTypes() {

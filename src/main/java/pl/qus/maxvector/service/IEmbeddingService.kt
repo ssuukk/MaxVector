@@ -1,9 +1,9 @@
 package pl.qus.maxvector.service
 
-import pl.qus.maxvector.hibernate.customtypes.EVector
-import pl.qus.maxvector.model.Embedding
+import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.DAOEmbedding
 
 interface IEmbeddingService {
-    fun findAll(): List<Embedding>
-    fun findClosest(ev: EVector): List<Embedding>
+    fun findAll(): List<DAOEmbedding>
+    fun findClosest(ev: PostgresVector): List<DAOEmbedding>
 }

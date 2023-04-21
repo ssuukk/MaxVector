@@ -1,30 +1,23 @@
-"""https://docs.spring.io/spring-graphql/docs/current/reference/html/"""
 type Query {
-    greeting(name: String! = "Spring"): String!
-    project(slug: ID!): Project
+    bookById(id: ID): Book
+    """embeddingById(id: ID): Embedding"""
+    embeddingByClosest(vec: Float): [Embedding]
 }
 
-""" A Project in the Spring portfolio """
-type Project {
-    """ Unique string id used in URLs """
-    slug: ID!
-    """ Project name """
-    name: String!
-    """ URL of the git repository """
-    repositoryUrl: String!
-    """ Current support status """
-    status: ProjectStatus!
+type Book {
+    id: ID
+    name: String
+    pageCount: Int
+    author: Author
 }
 
-enum ProjectStatus {
-    """ Actively supported by the Spring team """
-    ACTIVE
-    """ Supported by the community """
-    COMMUNITY
-    """ Prototype, not officially supported yet  """
-    INCUBATING
-    """ Project being retired, in maintenance mode """
-    ATTIC
-    """ End-Of-Lifed """
-    EOL
+type Author {
+    id: ID
+    firstName: String
+    lastName: String
+}
+
+type Embedding {
+    id: ID
+    embedding: [Float]
 }

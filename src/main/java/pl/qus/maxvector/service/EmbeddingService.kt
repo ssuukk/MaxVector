@@ -2,8 +2,8 @@ package pl.qus.maxvector.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import pl.qus.maxvector.hibernate.customtypes.EVector
-import pl.qus.maxvector.model.Embedding
+import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.DAOEmbedding
 import pl.qus.maxvector.repository.EmbeddingRepository
 
 
@@ -15,10 +15,10 @@ import pl.qus.maxvector.repository.EmbeddingRepository
 class EmbeddingService : IEmbeddingService {
     @Autowired
     lateinit var repository: EmbeddingRepository
-    override fun findAll(): List<Embedding> {
-        return repository.findAll() as List<Embedding>
+    override fun findAll(): List<DAOEmbedding> {
+        return repository.findAll() as List<DAOEmbedding>
     }
-    override fun findClosest(v: EVector): List<Embedding> {
+    override fun findClosest(v: PostgresVector): List<DAOEmbedding> {
         return repository.findClosestEuclid(v.toString(), 4).toMutableList()
     }
 }
