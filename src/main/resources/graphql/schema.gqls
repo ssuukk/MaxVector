@@ -1,7 +1,8 @@
 type Query {
     bookById(id: ID): Book
     """embeddingById(id: ID): Embedding"""
-    embeddingByClosest(vec: [Float!]!, k: Int!): [Embedding]
+    findClosestByVector(vec: [Float!]!, k: Int!): [Embedding]
+    findClosest(prompt: String!, k: Int!): [Embedding]
 }
 
 type Mutation {
@@ -30,4 +31,5 @@ type Author {
 type Embedding {
     id: ID
     embedding: [Float!]
+    label: String!
 }
