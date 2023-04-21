@@ -11,6 +11,7 @@ class EmbRowMapper : RowMapper<EmbeddingRecord> {
         val embedding = EmbeddingRecord()
         embedding.id = resultSet.getLong("id")
         embedding.embedding = PostgresVector.from(resultSet.getString("embedding"))
+        embedding.label = resultSet.getString("label")
         return embedding
     }
 }

@@ -43,9 +43,9 @@ class EmbeddingGQLController {
     }
 
     @QueryMapping
-    fun embeddingByClosest(@Argument vec: List<Double>, @Argument k: Int): List<GQLEmbedding> {
+    fun embeddingByClosest(@Argument vec: List<Double>, @Argument k: Int): List<GQLEmbeddingRecord> {
         val found = database.findClosestEuclidean(PostgresVector(vec), k)
-        return found.map {GQLEmbedding.from(it)}
+        return found.map {GQLEmbeddingRecord.from(it)}
     }
 
     @MutationMapping
