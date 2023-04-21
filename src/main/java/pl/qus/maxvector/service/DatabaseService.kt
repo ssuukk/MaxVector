@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import pl.qus.maxvector.dao.PostgresVectorDAO
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
-import pl.qus.maxvector.model.DAOEmbedding
+import pl.qus.maxvector.model.EmbeddingRecord
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -12,22 +12,22 @@ import pl.qus.maxvector.model.DAOEmbedding
 ///////////////////////////////////////////////////////////////////////////
 
 @Service
-class EmbeddingService : IEmbeddingService {
+class DatabaseService : IDatabaseService {
     @Autowired
     lateinit var postgresDAO: PostgresVectorDAO
 
-    override fun findAll(): List<DAOEmbedding> {
+    override fun findAll(): List<EmbeddingRecord> {
         return postgresDAO.findAll()
     }
-    override fun findClosest(ev: PostgresVector, k: Int): List<DAOEmbedding> {
+    override fun findClosest(ev: PostgresVector, k: Int): List<EmbeddingRecord> {
         return postgresDAO.selectClosestEuclid(ev, k).toMutableList()
     }
 
-    override fun upsertAll(embs: List<DAOEmbedding>): Boolean {
+    override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {
         return postgresDAO.upsertAll(embs)
     }
 
-    override fun insert(emb: DAOEmbedding): Boolean {
+    override fun insert(emb: EmbeddingRecord): Boolean {
         return postgresDAO.insert(emb)
     }
 }

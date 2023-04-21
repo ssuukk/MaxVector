@@ -10,7 +10,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "items")
-class DAOEmbedding {
+class EmbeddingRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = 0

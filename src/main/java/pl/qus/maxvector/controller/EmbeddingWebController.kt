@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
-import pl.qus.maxvector.service.IEmbeddingService
+import pl.qus.maxvector.service.IDatabaseService
 import pl.qus.maxvector.service.OpenAIService
 
 ///////////////////////////////////////////////////////////////////////////
@@ -19,7 +18,7 @@ class EmbeddingWebController {
     lateinit var openAIService: OpenAIService
 
     @Autowired
-    lateinit var embeddingService: IEmbeddingService
+    lateinit var embeddingService: IDatabaseService
     @GetMapping("/emb") // w jakiej ścieżce ukaze się stona
     fun findEmbeddings(model: Model): String {
         model.addAttribute("embeddings", embeddingService.findAll()) // atrybut na stronie html

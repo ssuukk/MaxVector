@@ -7,7 +7,7 @@ data class GQLEmbedding(
 
 {
     companion object {
-        fun from(d: DAOEmbedding): GQLEmbedding {
+        fun from(d: EmbeddingRecord): GQLEmbedding {
             return GQLEmbedding(d.id, d.embedding.points)
         }
     }

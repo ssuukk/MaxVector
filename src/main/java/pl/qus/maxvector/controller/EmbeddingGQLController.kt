@@ -8,7 +8,7 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.*
-import pl.qus.maxvector.service.IEmbeddingService
+import pl.qus.maxvector.service.IDatabaseService
 import pl.qus.maxvector.service.OpenAIService
 
 ///////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ import pl.qus.maxvector.service.OpenAIService
 class EmbeddingGQLController {
 
     @Autowired
-    lateinit var embeddingService: IEmbeddingService
+    lateinit var embeddingService: IDatabaseService
 
     @Autowired
     lateinit var openAIService: OpenAIService
@@ -56,7 +56,7 @@ class EmbeddingGQLController {
 
             razem.forEach {
                 embeddingService.insert(
-                    DAOEmbedding().apply {
+                    EmbeddingRecord().apply {
                         this.embedding = it.first
                         this.label = it.second
                     }

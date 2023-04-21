@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
-import pl.qus.maxvector.model.DAOEmbedding
+import pl.qus.maxvector.model.EmbeddingRecord
 import javax.persistence.EntityManager
 
 @Component
@@ -26,32 +26,32 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
         return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).resultList.size > 0
     }
 
-    override fun insert(emb: DAOEmbedding): Boolean {
+    override fun insert(emb: EmbeddingRecord): Boolean {
         return dataSource.createNativeQuery(SQL_INSERT_VECTORS)
             .setParameter("emb", emb.embedding.toString())
             .setParameter("label", emb.label)
             .resultList.size != 1
     }
 
-    override fun upsert(emb: DAOEmbedding): Boolean {
+    override fun upsert(emb: EmbeddingRecord): Boolean {
         return false
 //        return jdbcTemplate.update(
 //            SQL_INSERT_VECTORS, emb.toString()
 //        ) > 0
     }
-    override fun upsertAll(emb: List<DAOEmbedding>): Boolean {
+    override fun upsertAll(emb: List<EmbeddingRecord>): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun selectClosestEuclid(vec: PostgresVector, kval: Int): MutableList<DAOEmbedding> {
-        return dataSource.createNativeQuery(SQL_NEAREST_EUCLID, DAOEmbedding::class.java)
+    override fun selectClosestEuclid(vec: PostgresVector, kval: Int): MutableList<EmbeddingRecord> {
+        return dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
             .setParameter("emb", vec.toString())
             .setParameter("kval", kval)
-            .resultList as MutableList<DAOEmbedding>
+            .resultList as MutableList<EmbeddingRecord>
     }
 
-    override fun findAll(): List<DAOEmbedding> {
-        return dataSource.createNativeQuery(SQL_QUERY_ALL, DAOEmbedding::class.java).resultList as MutableList<DAOEmbedding>
+    override fun findAll(): List<EmbeddingRecord> {
+        return dataSource.createNativeQuery(SQL_QUERY_ALL, EmbeddingRecord::class.java).resultList as MutableList<EmbeddingRecord>
     }
 
 }
