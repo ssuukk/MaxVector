@@ -19,10 +19,10 @@ import pl.qus.maxvector.service.OpenAIService
 class EmbeddingGQLController {
 
     @Autowired
-    lateinit var embeddingService: IDatabaseService
+    lateinit var database: IDatabaseService
 
     @Autowired
-    lateinit var openAIService: OpenAIService
+    lateinit var openAI: OpenAIService
 
     // https://spring.io/guides/gs/graphql-server/
     // By defining a method named bookById annotated with @QuerMapping, this controller declares how to fetch a Book
@@ -44,18 +44,17 @@ class EmbeddingGQLController {
 
     @QueryMapping
     fun embeddingByClosest(@Argument vec: List<Double>, @Argument k: Int): List<GQLEmbedding> {
-        val found = embeddingService.findClosest(PostgresVector(vec), k)
+        val found = database.findClosestEuclidean(PostgresVector(vec), k)
         return found.map {GQLEmbedding.from(it)}
     }
 
     @MutationMapping
     suspend fun storeEmbedding(@Argument queries:List<String>) : OpenAIStatus {
         return try {
-            val xembs = openAIService.getEmbedding(queries)
-            val razem = xembs.zip(queries)
+            val zipped = openAI.getEmbedding(queries).zip(queries)
 
-            razem.forEach {
-                embeddingService.insert(
+            zipped.forEach {
+                database.insert(
                     EmbeddingRecord().apply {
                         this.embedding = it.first
                         this.label = it.second

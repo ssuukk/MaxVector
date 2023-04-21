@@ -19,7 +19,7 @@ class DatabaseService : IDatabaseService {
     override fun findAll(): List<EmbeddingRecord> {
         return postgresDAO.findAll()
     }
-    override fun findClosest(ev: PostgresVector, k: Int): List<EmbeddingRecord> {
+    override fun findClosestEuclidean(ev: PostgresVector, k: Int): List<EmbeddingRecord> {
         return postgresDAO.selectClosestEuclid(ev, k).toMutableList()
     }
 

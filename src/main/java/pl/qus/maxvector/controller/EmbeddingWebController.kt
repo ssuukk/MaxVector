@@ -15,7 +15,7 @@ import pl.qus.maxvector.service.OpenAIService
 class EmbeddingWebController {
 
     @Autowired
-    lateinit var openAIService: OpenAIService
+    lateinit var openAI: OpenAIService
 
     @Autowired
     lateinit var embeddingService: IDatabaseService
@@ -28,11 +28,11 @@ class EmbeddingWebController {
     @GetMapping("/closest") // w jakiej ścieżce ukaze się stona
     suspend fun findClosest(model: Model): String {
 
-        val embToFind = openAIService.getEmbedding("house animal")
+        val embToFind = openAI.getEmbedding("house animal")
 
         model.addAttribute(
             "embeddings", // atrybut na stronie html
-            embeddingService.findClosest(embToFind,5)
+            embeddingService.findClosestEuclidean(embToFind,5)
         )
         return "showEmbedding" // to wkazuje nazwę pliku templejtu, w którym należy to osadzić
     }
