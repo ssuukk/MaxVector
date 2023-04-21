@@ -2,7 +2,7 @@ package pl.qus.maxvector.model
 
 data class GQLEmbedding(
     val id: Long,
-    val embedding: List<Float>
+    val embedding: List<Double>
 )
 
 {

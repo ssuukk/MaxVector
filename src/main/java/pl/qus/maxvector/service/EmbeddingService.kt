@@ -8,7 +8,7 @@ import pl.qus.maxvector.repository.EmbeddingRepository
 
 
 ///////////////////////////////////////////////////////////////////////////
-// SERWIS - źródło danych do wyświetlania np. w kontrolerze
+// SERWIS - źródło danych np. dla kontrolera
 ///////////////////////////////////////////////////////////////////////////
 
 @Service
@@ -18,7 +18,7 @@ class EmbeddingService : IEmbeddingService {
     override fun findAll(): List<DAOEmbedding> {
         return repository.findAll() as List<DAOEmbedding>
     }
-    override fun findClosest(v: PostgresVector): List<DAOEmbedding> {
-        return repository.findClosestEuclid(v.toString(), 4).toMutableList()
+    override fun findClosest(ev: PostgresVector, k: Int): List<DAOEmbedding> {
+        return repository.findClosestEuclid(ev.toString(), k).toMutableList()
     }
 }

@@ -25,7 +25,7 @@ class EmbeddingWebController {
     fun findClosest(model: Model): String {
         model.addAttribute(
             "embeddings", // atrybut na stronie html
-            embeddingService.findClosest(PostgresVector(mutableListOf(5.0f, 6.0f, 7.0f)))
+            embeddingService.findClosest(PostgresVector(mutableListOf(5.0, 6.0, 7.0)),5)
         )
         return "showEmbedding" // to wkazuje nazwę pliku templejtu, w którym należy to osadzić
     }
