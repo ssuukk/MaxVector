@@ -6,6 +6,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.service.IEmbeddingService
+import pl.qus.maxvector.service.OpenAIService
 
 ///////////////////////////////////////////////////////////////////////////
 // KONTROLER - ten wyświetla strony WWW
@@ -13,6 +14,10 @@ import pl.qus.maxvector.service.IEmbeddingService
 
 @Controller
 class EmbeddingWebController {
+
+    @Autowired
+    lateinit var openAIService: OpenAIService
+
     @Autowired
     lateinit var embeddingService: IEmbeddingService
     @GetMapping("/emb") // w jakiej ścieżce ukaze się stona
@@ -22,10 +27,13 @@ class EmbeddingWebController {
     }
 
     @GetMapping("/closest") // w jakiej ścieżce ukaze się stona
-    fun findClosest(model: Model): String {
+    suspend fun findClosest(model: Model): String {
+
+        val embToFind = openAIService.getEmbedding("house animal")
+
         model.addAttribute(
             "embeddings", // atrybut na stronie html
-            embeddingService.findClosest(PostgresVector(mutableListOf(5.0, 6.0, 7.0)),5)
+            embeddingService.findClosest(embToFind,5)
         )
         return "showEmbedding" // to wkazuje nazwę pliku templejtu, w którym należy to osadzić
     }

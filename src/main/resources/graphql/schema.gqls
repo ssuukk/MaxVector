@@ -1,11 +1,17 @@
 type Query {
     bookById(id: ID): Book
     """embeddingById(id: ID): Embedding"""
-    embeddingByClosest(vec: Float, k: Int): [Embedding]
+    embeddingByClosest(vec: [Float!]!, k: Int!): [Embedding]
 }
 
 type Mutation {
-    storeEmbedding(queries: [String])
+    storeEmbedding(queries: [String!]!) : OpenAIStatus!
+}
+
+type OpenAIStatus {
+    status: Boolean!
+    error: String!
+    count: Int!
 }
 
 type Book {
@@ -23,5 +29,5 @@ type Author {
 
 type Embedding {
     id: ID
-    embedding: [Float]
+    embedding: [Float!]
 }

@@ -18,4 +18,7 @@ class DAOEmbedding {
     @Column
     @Type(type = "pl.qus.maxvector.hibernate.customtypes.PostgresVectorDatatype")
     lateinit var embedding: PostgresVector
+
+    @Column
+    lateinit var label: String
 }

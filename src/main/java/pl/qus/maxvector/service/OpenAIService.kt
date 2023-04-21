@@ -5,15 +5,19 @@ import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import kotlin.time.Duration.Companion.seconds
 
 @Service
-class OpenAIService {
+class OpenAIService(@Value("\${openAIapiKey}")
+                    private val openAIapiKey: String) {
+
+
     private val openAI: OpenAI by lazy {
         val openAiConfig = OpenAIConfig(
-            token = "kluczyk",
+            token = openAIapiKey,
             timeout = Timeout(socket = 60.seconds),
             // additional configurations...
         )

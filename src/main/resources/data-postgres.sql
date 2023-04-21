@@ -6,4 +6,4 @@ INSERT INTO cities(name, population) VALUES('Los Angeles', 3971000);
 INSERT INTO cities(name, population) VALUES('New York', 8550000);
 INSERT INTO cities(name, population) VALUES('Edinburgh', 464000);
 INSERT INTO cities(name, population) VALUES('Berlin', 3671000);
-INSERT INTO items (embedding) VALUES ('[1,2,3]'), ('[4,5,6]');
+INSERT INTO items (embedding, label) VALUES ('[1,2,3]','test1'), ('[4,5,6]','test2');

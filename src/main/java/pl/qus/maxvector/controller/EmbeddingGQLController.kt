@@ -7,11 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
-import pl.qus.maxvector.model.Author
-import pl.qus.maxvector.model.Book
-import pl.qus.maxvector.model.DAOEmbedding
-import pl.qus.maxvector.model.GQLEmbedding
-import pl.qus.maxvector.repository.EmbeddingRepository
+import pl.qus.maxvector.model.*
 import pl.qus.maxvector.service.IEmbeddingService
 import pl.qus.maxvector.service.OpenAIService
 
@@ -27,9 +23,6 @@ class EmbeddingGQLController {
 
     @Autowired
     lateinit var openAIService: OpenAIService
-
-    @Autowired
-    lateinit var repository: EmbeddingRepository
 
     // https://spring.io/guides/gs/graphql-server/
     // By defining a method named bookById annotated with @QuerMapping, this controller declares how to fetch a Book
@@ -50,20 +43,31 @@ class EmbeddingGQLController {
     }
 
     @QueryMapping
-    fun embeddingByClosest(@Argument vec: Double, @Argument k: Int): List<GQLEmbedding> {
-        val vec = PostgresVector(mutableListOf(vec,2.0,3.0))
-        val found = embeddingService.findClosest(vec, k)
+    fun embeddingByClosest(@Argument vec: List<Double>, @Argument k: Int): List<GQLEmbedding> {
+        val found = embeddingService.findClosest(PostgresVector(vec), k)
         return found.map {GQLEmbedding.from(it)}
     }
 
     @MutationMapping
-    suspend fun storeEmbedding(@Argument queries:List<String>) {
-        val embs = openAIService.getEmbedding(queries).map {
-            DAOEmbedding().apply {
-                this.embedding = it
+    suspend fun storeEmbedding(@Argument queries:List<String>) : OpenAIStatus {
+        return try {
+            val xembs = openAIService.getEmbedding(queries)
+            val razem = xembs.zip(queries)
+
+            razem.forEach {
+                embeddingService.insert(
+                    DAOEmbedding().apply {
+                        this.embedding = it.first
+                        this.label = it.second
+                    }
+                )
             }
+
+            OpenAIStatus(true, "", queries.size)
         }
-        repository.saveAll(embs)
+        catch (ex: Exception) {
+            OpenAIStatus(false, ex.message ?: "Unknown error", 0)
+        }
 
     }
 }
