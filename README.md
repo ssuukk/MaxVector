@@ -20,7 +20,7 @@ obtain embedding vectors for a list of words from OpenAI **straight into your da
       }
     }
 
-Or it could lookup embeddings in your database by prompt, first obtaining embedding for your prompt, like here:
+Or it could lookup embeddings in your database by prompt, first obtaining the embedding from OpenAI, like here:
 
     query findClosest {
       findClosest(prompt: "house animal", k: 3) {
@@ -32,4 +32,4 @@ Or it could lookup embeddings in your database by prompt, first obtaining embedd
 Of course - more features will be added as necessary.
 
 ## So how do I run it?
-All you need is a local instance of Postgres and a JAR build from this repo.
+All you need is a local instance of Postgres with [pgvector](https://github.com/pgvector/pgvector) extension and a JAR build from this repo.
