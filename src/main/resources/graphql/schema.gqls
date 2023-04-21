@@ -3,6 +3,7 @@ type Query {
     """embeddingById(id: ID): Embedding"""
     findClosestByVector(vec: [Float!]!, k: Int!): [Embedding]
     findClosest(prompt: String!, k: Int!): [Embedding]
+    deleteById(id: ID): Boolean!
 }
 
 type Mutation {

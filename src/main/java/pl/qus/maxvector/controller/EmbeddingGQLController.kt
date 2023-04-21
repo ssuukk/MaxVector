@@ -55,6 +55,11 @@ class EmbeddingGQLController {
         return found.map {GQLEmbeddingRecord.from(it)}
     }
 
+    @QueryMapping
+    fun deleteById(@Argument id: Long): Boolean {
+        return database.deleteById(id)
+    }
+
     @MutationMapping
     suspend fun storeEmbedding(@Argument queries:List<String>) : OpenAIStatus {
         return try {

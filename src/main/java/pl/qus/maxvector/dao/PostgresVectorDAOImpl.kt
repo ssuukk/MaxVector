@@ -19,17 +19,23 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val SQL_UPSERT_VECTORS = "INSERT INTO items (id, embedding, label) VALUES ? ON CONFLICT (id) DO UPDATE SET embedding = EXCLUDED.embedding"
     private val SQL_DELETE_BY_ID = "DELETE FROM items WHERE id = :id"
     private val SQL_NEAREST_EUCLID = "SELECT * FROM items ORDER BY embedding <-> CAST(:emb AS vector) LIMIT :kval"
+    private val SQL_NEAREST_INNER = "SELECT * FROM items ORDER BY embedding <#> CAST(:emb AS vector) LIMIT :kval"
+    private val SQL_NEAREST_COSINE = "SELECT * FROM items ORDER BY embedding <=> CAST(:emb AS vector) LIMIT :kval"
+    private val SQL_DISTANCE_EUCLID = "SELECT -1 * (embedding <-> CAST(:emb AS vector)) AS inner_product FROM items"
+    private val SQL_DISTANCE_INNER = "SELECT -1 * (embedding <#> CAST(:emb AS vector)) AS inner_product FROM items"
+    private val SQL_DISTANCE_COSINE = "SELECT 1 - (embedding <=> CAST(:emb AS vector)) AS cosine_similarity FROM items"
     private val SQL_QUERY_ALL = "select * FROM items"
-    override fun deleteVectorById(id: Long): Boolean {
-//        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
-//        logger.debug("======================================== $test")
-        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
-    }
-
 
     fun ensureDimensionality(emb: PostgresVector) {
         if(emb.dimension != dimensions)
             throw IllegalStateException("Atempt to use ${emb.dimension}-dimension vector with $dimensions-dimension db!")
+    }
+
+    @Transactional
+    override fun deleteVectorById(id: Long): Boolean {
+//        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
+//        logger.debug("======================================== $test")
+        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
     }
 
     @Transactional
@@ -45,9 +51,6 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     override fun upsert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
         return false
-//        return jdbcTemplate.update(
-//            SQL_INSERT_VECTORS, emb.toString()
-//        ) > 0
     }
     @Transactional
     override fun upsertAll(emb: List<EmbeddingRecord>): Boolean {

@@ -8,4 +8,5 @@ interface IDatabaseService {
     fun findClosestEuclidean(ev: PostgresVector, k: Int): List<EmbeddingRecord>
     abstract fun upsertAll(embs: List<EmbeddingRecord>): Boolean
     fun insert(emb: EmbeddingRecord): Boolean
+    fun deleteById(id: Long): Boolean
 }

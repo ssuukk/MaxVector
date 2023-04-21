@@ -30,4 +30,8 @@ class DatabaseService : IDatabaseService {
     override fun insert(emb: EmbeddingRecord): Boolean {
         return postgresDAO.insert(emb)
     }
+
+    override fun deleteById(id: Long): Boolean {
+        return postgresDAO.deleteVectorById(id)
+    }
 }
