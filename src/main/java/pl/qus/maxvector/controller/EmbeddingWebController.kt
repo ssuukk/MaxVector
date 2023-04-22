@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.service.IDatabaseService
 import pl.qus.maxvector.service.IEmbeddingService
 
@@ -32,7 +33,7 @@ class EmbeddingWebController {
 
         model.addAttribute(
             "embeddings", // atrybut na stronie html
-            embeddingService.findClosestEuclidean(embToFind,5)
+            embeddingService.findClosest(embToFind,5, DistanceType.EUCLIDEAN)
         )
         return "showEmbedding" // to wkazuje nazwę pliku templejtu, w którym należy to osadzić
     }

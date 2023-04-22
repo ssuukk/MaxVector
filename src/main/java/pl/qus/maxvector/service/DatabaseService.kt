@@ -22,11 +22,7 @@ class DatabaseService : IDatabaseService {
     }
 
     override fun findClosest(ev: PostgresVector, k: Int, t: DistanceType): List<EmbeddingRecord> {
-        return when(t) {
-            DistanceType.EUCLIDEAN -> postgresDAO.selectClosestEuclid(ev, k).toMutableList()
-            DistanceType.COSINE -> postgresDAO.selectClosestCosine(ev, k).toMutableList()
-            DistanceType.INNER_PRODUCT -> postgresDAO.selectClosestInnerProduct(ev, k).toMutableList()
-        }
+        return postgresDAO.selectClosest(ev, k, t)
     }
 
     override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {

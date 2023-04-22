@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
 import java.lang.IllegalStateException
 import javax.persistence.EntityManager
@@ -79,28 +80,27 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     ///////////////////////////////////////////////////////////////////////////
     // Queries
 
-    override fun selectClosestEuclid(vec: PostgresVector, kval: Int): MutableList<EmbeddingRecord> {
-        ensureDimensionality(vec)
-        return dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
-            .setParameter("emb", vec.toString())
-            .setParameter("kval", kval)
-            .resultList as MutableList<EmbeddingRecord>
-    }
-
-    override fun selectClosestCosine(vec: PostgresVector, kval: Int): List<EmbeddingRecord> {
-        ensureDimensionality(vec)
-        return dataSource.createNativeQuery(SQL_NEAREST_COSINE, EmbeddingRecord::class.java)
-            .setParameter("emb", vec.toString())
-            .setParameter("kval", kval)
-            .resultList as MutableList<EmbeddingRecord>
-    }
-
-    override fun selectClosestInnerProduct(vec: PostgresVector, kval: Int): List<EmbeddingRecord> {
-        ensureDimensionality(vec)
-        return dataSource.createNativeQuery(SQL_NEAREST_INNER, EmbeddingRecord::class.java)
-            .setParameter("emb", vec.toString())
-            .setParameter("kval", kval)
-            .resultList as MutableList<EmbeddingRecord>
+    override fun selectClosest(vec: PostgresVector, kval: Int, measure: DistanceType): List<EmbeddingRecord> {
+        return when(measure) {
+            DistanceType.EUCLIDEAN -> {
+                dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
+                    .setParameter("emb", vec.toString())
+                    .setParameter("kval", kval)
+                    .resultList as MutableList<EmbeddingRecord>
+            }
+            DistanceType.COSINE -> {
+                dataSource.createNativeQuery(SQL_NEAREST_COSINE, EmbeddingRecord::class.java)
+                    .setParameter("emb", vec.toString())
+                    .setParameter("kval", kval)
+                    .resultList as MutableList<EmbeddingRecord>
+            }
+            DistanceType.INNER_PRODUCT -> {
+                dataSource.createNativeQuery(SQL_NEAREST_INNER, EmbeddingRecord::class.java)
+                    .setParameter("emb", vec.toString())
+                    .setParameter("kval", kval)
+                    .resultList as MutableList<EmbeddingRecord>
+            }
+        }
     }
 
     override fun findAll(): List<EmbeddingRecord> {
