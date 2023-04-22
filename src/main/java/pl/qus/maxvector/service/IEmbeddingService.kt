@@ -1,6 +1,6 @@
 package pl.qus.maxvector.service
 
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.PostgresVector
 
 interface IEmbeddingService {
     suspend fun getEmbedding(entries: List<String>): List<PostgresVector>

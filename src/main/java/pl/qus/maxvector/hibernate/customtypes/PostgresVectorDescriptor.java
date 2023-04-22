@@ -5,6 +5,7 @@ import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.ImmutableMutabilityPlan;
 import org.hibernate.type.descriptor.spi.JdbcRecommendedSqlTypeMappingContext;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
+import pl.qus.maxvector.model.PostgresVector;
 
 
 public class PostgresVectorDescriptor extends AbstractTypeDescriptor<PostgresVector> {

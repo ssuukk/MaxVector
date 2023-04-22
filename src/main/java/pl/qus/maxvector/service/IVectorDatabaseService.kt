@@ -1,6 +1,6 @@
 package pl.qus.maxvector.service
 
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.PostgresVector
 import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
 import pl.qus.maxvector.model.VectorMetadata

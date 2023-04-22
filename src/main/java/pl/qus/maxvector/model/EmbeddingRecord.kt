@@ -1,7 +1,6 @@
 package pl.qus.maxvector.model
 
 import org.hibernate.annotations.Type
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import javax.persistence.*
 
 ///////////////////////////////////////////////////////////////////////////

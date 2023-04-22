@@ -7,7 +7,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.PostgresVector
 import kotlin.time.Duration.Companion.seconds
 
 @Service

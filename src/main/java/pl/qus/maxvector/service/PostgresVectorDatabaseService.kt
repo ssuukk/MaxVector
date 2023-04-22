@@ -3,7 +3,7 @@ package pl.qus.maxvector.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import pl.qus.maxvector.dao.PostgresVectorDAO
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.PostgresVector
 import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
 import pl.qus.maxvector.model.VectorMetadata

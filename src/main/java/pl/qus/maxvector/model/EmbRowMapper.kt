@@ -1,7 +1,6 @@
 package pl.qus.maxvector.model
 
 import org.springframework.jdbc.core.RowMapper
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import java.sql.ResultSet
 import java.sql.SQLException
 

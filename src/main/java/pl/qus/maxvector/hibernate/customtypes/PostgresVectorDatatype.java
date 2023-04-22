@@ -2,6 +2,7 @@ package pl.qus.maxvector.hibernate.customtypes;
 
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
+import pl.qus.maxvector.model.PostgresVector;
 
 public class PostgresVectorDatatype
         extends AbstractSingleColumnStandardBasicType<PostgresVector> {

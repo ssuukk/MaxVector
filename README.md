@@ -26,8 +26,24 @@ Or it could lookup embeddings in your database by prompt, first obtaining the em
       findClosest(prompt: "house animal", k: 3, measure: COSINE) {
         id
         label
+        metadata {
+          example
+        }
+        embedding {
+          points
+        }
       }
     }
+
+If you prefer to query the DB by supplying all 2048 coordinates, you can of course do that, too:
+
+    query closestVectors {
+      findClosestByVector(vec:[1.5, 3.45, 32.3, (2045 more coords...)], k: 3, measure: EUCLIDEAN) {
+        id
+        label
+      }  
+    }
+
 
 Of course - more features will be added as necessary.
 

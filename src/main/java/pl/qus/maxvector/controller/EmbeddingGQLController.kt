@@ -7,7 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import pl.qus.maxvector.model.VectorMetadata
-import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.PostgresVector
 import pl.qus.maxvector.model.*
 import pl.qus.maxvector.service.IVectorDatabaseService
 import pl.qus.maxvector.service.IEmbeddingService

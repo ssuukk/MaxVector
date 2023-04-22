@@ -1,4 +1,4 @@
-package pl.qus.maxvector.hibernate.customtypes
+package pl.qus.maxvector.model
 
 class PostgresVector(var points: List<Double> = listOf()) {
     override fun toString(): String = points.joinToString(",","[","]")
