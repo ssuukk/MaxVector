@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.*
 import pl.qus.maxvector.service.IDatabaseService
-import pl.qus.maxvector.service.OpenAIService
+import pl.qus.maxvector.service.IEmbeddingService
 
 ///////////////////////////////////////////////////////////////////////////
 // KONTROLER - ten odpowiada na zapytania GraphQL
@@ -22,7 +22,7 @@ class EmbeddingGQLController {
     lateinit var database: IDatabaseService
 
     @Autowired
-    lateinit var openAI: OpenAIService
+    lateinit var openAI: IEmbeddingService
 
     // https://spring.io/guides/gs/graphql-server/
     // By defining a method named bookById annotated with @QuerMapping, this controller declares how to fetch a Book

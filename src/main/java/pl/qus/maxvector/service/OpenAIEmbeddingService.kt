@@ -11,8 +11,8 @@ import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import kotlin.time.Duration.Companion.seconds
 
 @Service
-class OpenAIService(@Value("\${openAIapiKey}")
-                    private val openAIapiKey: String) {
+class OpenAIEmbeddingService(@Value("\${openAIapiKey}")
+                    private val openAIapiKey: String) : IEmbeddingService {
 
 
     private val openAI: OpenAI by lazy {
@@ -24,7 +24,7 @@ class OpenAIService(@Value("\${openAIapiKey}")
         OpenAI(openAiConfig)
     }
 
-    suspend fun getEmbedding(entries: List<String>): List<PostgresVector> {
+    override suspend fun getEmbedding(entries: List<String>): List<PostgresVector> {
         // https://github.com/aallam/openai-kotlin/tree/main
 
         val response = openAI.embeddings(
@@ -39,7 +39,7 @@ class OpenAIService(@Value("\${openAIapiKey}")
         }
     }
 
-    suspend fun getEmbedding(query: String): PostgresVector {
+    override suspend fun getEmbedding(query: String): PostgresVector {
         val response = openAI.embeddings(
             request = EmbeddingRequest(
                 model = ModelId("text-similarity-babbage-001"),

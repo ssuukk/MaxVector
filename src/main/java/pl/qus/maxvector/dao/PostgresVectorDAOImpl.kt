@@ -31,6 +31,9 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
             throw IllegalStateException("Atempt to use ${emb.dimension}-dimension vector with $dimensions-dimension db!")
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Transactional update methods
+
     @Transactional
     override fun deleteVectorById(id: Long): Boolean {
 //        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
@@ -57,6 +60,9 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
         TODO("Not yet implemented")
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Queries
+
     override fun selectClosestEuclid(vec: PostgresVector, kval: Int): MutableList<EmbeddingRecord> {
         ensureDimensionality(vec)
         return dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
@@ -68,5 +74,4 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     override fun findAll(): List<EmbeddingRecord> {
         return dataSource.createNativeQuery(SQL_QUERY_ALL, EmbeddingRecord::class.java).resultList as MutableList<EmbeddingRecord>
     }
-
 }

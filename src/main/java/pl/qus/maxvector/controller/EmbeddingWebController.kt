@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import pl.qus.maxvector.service.IDatabaseService
-import pl.qus.maxvector.service.OpenAIService
+import pl.qus.maxvector.service.IEmbeddingService
 
 ///////////////////////////////////////////////////////////////////////////
 // KONTROLER - ten wyświetla strony WWW
@@ -15,7 +15,7 @@ import pl.qus.maxvector.service.OpenAIService
 class EmbeddingWebController {
 
     @Autowired
-    lateinit var openAI: OpenAIService
+    lateinit var openAI: IEmbeddingService
 
     @Autowired
     lateinit var embeddingService: IDatabaseService
