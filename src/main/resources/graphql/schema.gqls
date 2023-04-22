@@ -1,13 +1,19 @@
 type Query {
     bookById(id: ID): Book
     """embeddingById(id: ID): Embedding"""
-    findClosestByVector(vec: [Float!]!, k: Int!): [Embedding]
-    findClosest(prompt: String!, k: Int!): [Embedding]
+    findClosestByVector(vec: [Float!]!, k: Int!, measure: DistanceType = EUCLIDEAN): [Embedding]
+    findClosest(prompt: String!, k: Int!, measure: DistanceType = EUCLIDEAN): [Embedding]
     deleteById(id: ID): Boolean!
 }
 
 type Mutation {
     storeEmbedding(queries: [String!]!) : OpenAIStatus!
+}
+
+enum DistanceType {
+    EUCLIDEAN
+    COSINE
+    INNER_PRODUCT
 }
 
 type OpenAIStatus {

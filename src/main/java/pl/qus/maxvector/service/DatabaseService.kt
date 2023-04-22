@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import pl.qus.maxvector.dao.PostgresVectorDAO
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
+import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
 
 
@@ -19,8 +20,13 @@ class DatabaseService : IDatabaseService {
     override fun findAll(): List<EmbeddingRecord> {
         return postgresDAO.findAll()
     }
-    override fun findClosestEuclidean(ev: PostgresVector, k: Int): List<EmbeddingRecord> {
-        return postgresDAO.selectClosestEuclid(ev, k).toMutableList()
+
+    override fun findClosest(ev: PostgresVector, k: Int, t: DistanceType): List<EmbeddingRecord> {
+        return when(t) {
+            DistanceType.EUCLIDEAN -> postgresDAO.selectClosestEuclid(ev, k).toMutableList()
+            DistanceType.COSINE -> postgresDAO.selectClosestCosine(ev, k).toMutableList()
+            DistanceType.INNER_PRODUCT -> postgresDAO.selectClosestInnerProduct(ev, k).toMutableList()
+        }
     }
 
     override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {

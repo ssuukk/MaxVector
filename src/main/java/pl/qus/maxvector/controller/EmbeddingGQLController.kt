@@ -43,16 +43,13 @@ class EmbeddingGQLController {
     }
 
     @QueryMapping
-    fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int): List<GQLEmbeddingRecord> {
-        val found = database.findClosestEuclidean(PostgresVector(vec), k)
-        return found.map {GQLEmbeddingRecord.from(it)}
-    }
+    fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<GQLEmbeddingRecord> =
+        database.findClosest(PostgresVector(vec), k, measure).map {GQLEmbeddingRecord.from(it)}
 
     @QueryMapping
-    suspend fun findClosest(@Argument prompt: String, @Argument k: Int): List<GQLEmbeddingRecord> {
+    suspend fun findClosest(@Argument prompt: String, @Argument k: Int, @Argument measure: DistanceType): List<GQLEmbeddingRecord> {
         val res = openAI.getEmbedding(prompt)
-        val found = database.findClosestEuclidean(res, k)
-        return found.map {GQLEmbeddingRecord.from(it)}
+        return database.findClosest(res, k, measure).map { GQLEmbeddingRecord.from(it) }
     }
 
     @QueryMapping

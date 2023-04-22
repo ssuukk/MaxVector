@@ -23,7 +23,7 @@ obtain embedding vectors for a list of words from OpenAI **straight into your da
 Or it could lookup embeddings in your database by prompt, first obtaining the embedding from OpenAI, like here:
 
     query findClosest {
-      findClosest(prompt: "house animal", k: 3) {
+      findClosest(prompt: "house animal", k: 3, measure: COSINE) {
         id
         label
       }

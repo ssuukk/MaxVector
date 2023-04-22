@@ -14,7 +14,6 @@ import kotlin.time.Duration.Companion.seconds
 class OpenAIEmbeddingService(@Value("\${openAIapiKey}")
                     private val openAIapiKey: String) : IEmbeddingService {
 
-
     private val openAI: OpenAI by lazy {
         val openAiConfig = OpenAIConfig(
             token = openAIapiKey,

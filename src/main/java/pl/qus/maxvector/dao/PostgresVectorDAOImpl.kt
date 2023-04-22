@@ -16,8 +16,9 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val logger = LoggerFactory.getLogger(PostgresVectorDAOImpl::class.java)
 
     private val SQL_INSERT_VECTORS = "INSERT INTO items (embedding, label) VALUES (CAST(:emb AS vector),:label)"
-    private val SQL_UPSERT_VECTORS = "INSERT INTO items (id, embedding, label) VALUES ? ON CONFLICT (id) DO UPDATE SET embedding = EXCLUDED.embedding"
+    private val SQL_UPSERT_VECTORS = "INSERT INTO items (id, embedding, label) VALUES (:id,CAST(:emb AS vector),:label) ON CONFLICT (id) DO UPDATE SET embedding = EXCLUDED.embedding"
     private val SQL_DELETE_BY_ID = "DELETE FROM items WHERE id = :id"
+
     private val SQL_NEAREST_EUCLID = "SELECT * FROM items ORDER BY embedding <-> CAST(:emb AS vector) LIMIT :kval"
     private val SQL_NEAREST_INNER = "SELECT * FROM items ORDER BY embedding <#> CAST(:emb AS vector) LIMIT :kval"
     private val SQL_NEAREST_COSINE = "SELECT * FROM items ORDER BY embedding <=> CAST(:emb AS vector) LIMIT :kval"
@@ -35,13 +36,6 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     // Transactional update methods
 
     @Transactional
-    override fun deleteVectorById(id: Long): Boolean {
-//        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
-//        logger.debug("======================================== $test")
-        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
-    }
-
-    @Transactional
     override fun insert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
         return dataSource.createNativeQuery(SQL_INSERT_VECTORS)
@@ -53,12 +47,34 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     @Transactional
     override fun upsert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
-        return false
+        return dataSource.createNativeQuery(SQL_UPSERT_VECTORS)
+            .setParameter("id", emb.id)
+            .setParameter("emb", emb.embedding.toString())
+            .setParameter("label", emb.label)
+            .executeUpdate() > 0
     }
+
     @Transactional
-    override fun upsertAll(emb: List<EmbeddingRecord>): Boolean {
-        TODO("Not yet implemented")
+    override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {
+        var i = 0
+        embs.forEach { emb ->
+            dataSource.createNativeQuery(SQL_UPSERT_VECTORS)
+                .setParameter("id", emb.id)
+                .setParameter("emb", emb.embedding.toString())
+                .setParameter("label", emb.label)
+                .executeUpdate()
+            i++
+        }
+        return i == embs.size
     }
+
+    @Transactional
+    override fun deleteVectorById(id: Long): Boolean {
+//        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
+//        logger.debug("======================================== $test")
+        return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Queries
@@ -66,6 +82,22 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     override fun selectClosestEuclid(vec: PostgresVector, kval: Int): MutableList<EmbeddingRecord> {
         ensureDimensionality(vec)
         return dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
+            .setParameter("emb", vec.toString())
+            .setParameter("kval", kval)
+            .resultList as MutableList<EmbeddingRecord>
+    }
+
+    override fun selectClosestCosine(vec: PostgresVector, kval: Int): List<EmbeddingRecord> {
+        ensureDimensionality(vec)
+        return dataSource.createNativeQuery(SQL_NEAREST_COSINE, EmbeddingRecord::class.java)
+            .setParameter("emb", vec.toString())
+            .setParameter("kval", kval)
+            .resultList as MutableList<EmbeddingRecord>
+    }
+
+    override fun selectClosestInnerProduct(vec: PostgresVector, kval: Int): List<EmbeddingRecord> {
+        ensureDimensionality(vec)
+        return dataSource.createNativeQuery(SQL_NEAREST_INNER, EmbeddingRecord::class.java)
             .setParameter("emb", vec.toString())
             .setParameter("kval", kval)
             .resultList as MutableList<EmbeddingRecord>

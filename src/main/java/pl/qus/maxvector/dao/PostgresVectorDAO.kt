@@ -10,5 +10,7 @@ interface PostgresVectorDAO {
     fun insert(emb: EmbeddingRecord): Boolean
     fun upsertAll(emb: List<EmbeddingRecord>): Boolean
     fun selectClosestEuclid(vec: PostgresVector, kval: Int): List<EmbeddingRecord>
+    fun selectClosestCosine(vec: PostgresVector, kval: Int): List<EmbeddingRecord>
+    fun selectClosestInnerProduct(vec: PostgresVector, kval: Int): List<EmbeddingRecord>
     fun findAll(): List<EmbeddingRecord>
 }
