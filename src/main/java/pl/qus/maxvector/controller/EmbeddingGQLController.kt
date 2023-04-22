@@ -6,9 +6,10 @@ import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
+import pl.qus.maxvector.model.VectorMetadata
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.*
-import pl.qus.maxvector.service.IDatabaseService
+import pl.qus.maxvector.service.IVectorDatabaseService
 import pl.qus.maxvector.service.IEmbeddingService
 
 ///////////////////////////////////////////////////////////////////////////
@@ -19,37 +20,28 @@ import pl.qus.maxvector.service.IEmbeddingService
 class EmbeddingGQLController {
 
     @Autowired
-    lateinit var database: IDatabaseService
+    lateinit var database: IVectorDatabaseService
 
     @Autowired
     lateinit var openAI: IEmbeddingService
 
-    // https://spring.io/guides/gs/graphql-server/
-    // By defining a method named bookById annotated with @QuerMapping, this controller declares how to fetch a Book
-    // as defined under the Query type. The query field is determined from the method name,
-    // but can also be declared on the annotation itself.
-    @QueryMapping
-    fun bookById(@Argument id: String): Book? {
-        return Book.getById(id)
-    }
-
     // The @SchemaMapping annotation maps a handler method to a field in the GraphQL schema and declares it to be the
     // DataFetcher for that field. The field name defaults to the method name,
     // and the type name defaults to the simple class name of the source/parent object injected into the method.
-    // In this example, the field defaults to author and the type defaults to Book.
+    // In this example, the field defaults to VectorMetadata and the type defaults to Embedding.
     @SchemaMapping
-    fun author(book: Book): Author? {
-        return Author.getById(book.authorId)
+    fun metadata(rec: EmbeddingRecord): VectorMetadata? {
+        return database.getMetadataById(rec.id)
     }
 
     @QueryMapping
-    fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<GQLEmbeddingRecord> =
-        database.findClosest(PostgresVector(vec), k, measure).map {GQLEmbeddingRecord.from(it)}
+    fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> =
+        database.findClosest(PostgresVector(vec), k, measure)
 
     @QueryMapping
-    suspend fun findClosest(@Argument prompt: String, @Argument k: Int, @Argument measure: DistanceType): List<GQLEmbeddingRecord> {
+    suspend fun findClosest(@Argument prompt: String, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> {
         val res = openAI.getEmbedding(prompt)
-        return database.findClosest(res, k, measure).map { GQLEmbeddingRecord.from(it) }
+        return database.findClosest(res, k, measure)
     }
 
     @QueryMapping

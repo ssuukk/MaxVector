@@ -1,8 +1,7 @@
 type Query {
-    bookById(id: ID): Book
-    """embeddingById(id: ID): Embedding"""
-    findClosestByVector(vec: [Float!]!, k: Int!, measure: DistanceType = EUCLIDEAN): [Embedding]
-    findClosest(prompt: String!, k: Int!, measure: DistanceType = EUCLIDEAN): [Embedding]
+    """embeddingById(id: ID): EmbeddingRecord"""
+    findClosestByVector(vec: [Float!]!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
+    findClosest(prompt: String!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
     deleteById(id: ID): Boolean!
 }
 
@@ -22,21 +21,17 @@ type OpenAIStatus {
     count: Int!
 }
 
-type Book {
+type EmbeddingRecord {
     id: ID
-    name: String
-    pageCount: Int
-    author: Author
-}
-
-type Author {
-    id: ID
-    firstName: String
-    lastName: String
-}
-
-type Embedding {
-    id: ID
-    embedding: [Float!]
+    embedding: PostgresVector!
     label: String!
+    metadata: VectorMetadata
+}
+
+type PostgresVector {
+    points: [Float!]!
+}
+
+type VectorMetadata {
+    example: String!
 }

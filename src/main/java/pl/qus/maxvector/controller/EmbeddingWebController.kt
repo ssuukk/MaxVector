@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import pl.qus.maxvector.model.DistanceType
-import pl.qus.maxvector.service.IDatabaseService
+import pl.qus.maxvector.service.IVectorDatabaseService
 import pl.qus.maxvector.service.IEmbeddingService
 
 ///////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ class EmbeddingWebController {
     lateinit var openAI: IEmbeddingService
 
     @Autowired
-    lateinit var embeddingService: IDatabaseService
+    lateinit var embeddingService: IVectorDatabaseService
     @GetMapping("/emb") // w jakiej ścieżce ukaze się stona
     fun findEmbeddings(model: Model): String {
         model.addAttribute("embeddings", embeddingService.findAll()) // atrybut na stronie html

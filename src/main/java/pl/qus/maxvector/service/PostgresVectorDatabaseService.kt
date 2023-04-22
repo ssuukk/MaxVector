@@ -6,6 +6,7 @@ import pl.qus.maxvector.dao.PostgresVectorDAO
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
+import pl.qus.maxvector.model.VectorMetadata
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -13,7 +14,7 @@ import pl.qus.maxvector.model.EmbeddingRecord
 ///////////////////////////////////////////////////////////////////////////
 
 @Service
-class DatabaseService : IDatabaseService {
+class PostgresVectorDatabaseService : IVectorDatabaseService {
     @Autowired
     lateinit var postgresDAO: PostgresVectorDAO
 
@@ -23,6 +24,10 @@ class DatabaseService : IDatabaseService {
 
     override fun findClosest(ev: PostgresVector, k: Int, t: DistanceType): List<EmbeddingRecord> {
         return postgresDAO.selectClosest(ev, k, t)
+    }
+
+    override fun getMetadataById(id: Long): VectorMetadata {
+        return postgresDAO.getMetadataById(id)
     }
 
     override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {

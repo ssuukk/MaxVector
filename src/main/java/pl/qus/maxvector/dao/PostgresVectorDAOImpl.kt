@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import pl.qus.maxvector.hibernate.customtypes.PostgresVector
 import pl.qus.maxvector.model.DistanceType
 import pl.qus.maxvector.model.EmbeddingRecord
+import pl.qus.maxvector.model.VectorMetadata
 import java.lang.IllegalStateException
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
@@ -105,5 +106,9 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
 
     override fun findAll(): List<EmbeddingRecord> {
         return dataSource.createNativeQuery(SQL_QUERY_ALL, EmbeddingRecord::class.java).resultList as MutableList<EmbeddingRecord>
+    }
+
+    override fun getMetadataById(id: Long): VectorMetadata {
+        return VectorMetadata("example metadata for id=$id")
     }
 }
