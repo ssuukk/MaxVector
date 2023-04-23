@@ -47,10 +47,10 @@ If you prefer to query the DB by supplying all 2048 coordinates, you can of cour
 
 Of course - more features will be added as necessary.
 
-## So how do I run it?
+# Installation
 All you need is a local instance of Postgres with [pgvector](https://github.com/pgvector/pgvector) extension and a JAR build from this repo.
 
-### Installing and configuring Postgres
+## Installing and configuring Postgres
 
 On any Debian-ish Linux install Postgres by:
 
@@ -92,12 +92,12 @@ And restart postgres service:
 
     $ sudo service postgresql restart
 
-### Installing Postgres vector extension
+## Installing Postgres vector extension
 
 Go to [pgvector GitHub](https://github.com/pgvector/pgvector#installation) and check the installation section 
 there to install Vector extension.
 
-### Configuring MaxVector
+## Configuring MaxVector
 
 Edit `src\main\resources\application.properties` file, add `openAIapiKey` line with your OpenAI API key:
 
@@ -107,6 +107,11 @@ Edit `src\main\resources\application.properties` file, add `openAIapiKey` line w
     
     openAIapiKey=sk-<your-openAPI-key>
 
-### Build the application
+## Build the application
 
 Use Gradle.
+
+# Usage
+
+Query the db with GraphQL, either by plain HTTP requests or any GraphQL client, like [Apollo](https://github.com/apollographql).
+Check `src\main\resources\graphql\schema.gqls` for currently implemented queries and mutations
