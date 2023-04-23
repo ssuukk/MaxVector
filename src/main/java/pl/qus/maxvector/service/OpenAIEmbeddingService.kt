@@ -7,7 +7,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import pl.qus.maxvector.model.PostgresVector
+import pl.qus.maxvector.model.EmbVector
 import kotlin.time.Duration.Companion.seconds
 
 @Service
@@ -23,7 +23,7 @@ class OpenAIEmbeddingService(@Value("\${openAIapiKey}")
         OpenAI(openAiConfig)
     }
 
-    override suspend fun getEmbedding(entries: List<String>): List<PostgresVector> {
+    override suspend fun getEmbedding(entries: List<String>): List<EmbVector> {
         // https://github.com/aallam/openai-kotlin/tree/main
 
         val response = openAI.embeddings(
@@ -34,11 +34,11 @@ class OpenAIEmbeddingService(@Value("\${openAIapiKey}")
         )
 
         return response.embeddings.map {
-            PostgresVector(it.embedding.toMutableList())
+            EmbVector(it.embedding.toMutableList())
         }
     }
 
-    override suspend fun getEmbedding(query: String): PostgresVector {
+    override suspend fun getEmbedding(query: String): EmbVector {
         val response = openAI.embeddings(
             request = EmbeddingRequest(
                 model = ModelId("text-similarity-babbage-001"),
@@ -46,6 +46,6 @@ class OpenAIEmbeddingService(@Value("\${openAIapiKey}")
             )
         )
 
-        return PostgresVector(response.embeddings.first().embedding.toMutableList())
+        return EmbVector(response.embeddings.first().embedding.toMutableList())
     }
 }

@@ -22,15 +22,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.hibernate:hibernate-core'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin' // JSON
+
+	// kotlin
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4'
+
+	// openAI
 	implementation "com.aallam.openai:openai-client:3.2.0"
 	implementation "io.ktor:ktor-client-java:2.2.4"
-	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'ch.qos.logback:logback-classic:1.2.9'
+
+	// hibernate
+	implementation 'org.hibernate:hibernate-core'
+	//implementation 'io.hypersistence:hypersistence-utils-hibernate-62:3.3.2' // https://github.com/vladmihalcea/hypersistence-utils/tree/master
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework:spring-webflux'

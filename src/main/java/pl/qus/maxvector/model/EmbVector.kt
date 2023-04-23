@@ -1,6 +1,6 @@
 package pl.qus.maxvector.model
 
-class PostgresVector(var points: List<Double> = listOf()) {
+class EmbVector(var points: List<Double> = listOf()) {
     override fun toString(): String = points.joinToString(",","[","]")
 
     operator fun get(i: Int):Double {
@@ -16,7 +16,7 @@ class PostgresVector(var points: List<Double> = listOf()) {
     
     companion object {
         @JvmStatic
-        fun from(value: String): PostgresVector =
-            PostgresVector(value.substring(1, value.length - 1).split(",").map { it.toDouble() }.toMutableList())
+        fun from(value: String): EmbVector =
+            EmbVector(value.substring(1, value.length - 1).split(",").map { it.toDouble() })
     }
 }

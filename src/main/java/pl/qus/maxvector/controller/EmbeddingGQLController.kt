@@ -7,7 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import pl.qus.maxvector.model.VectorMetadata
-import pl.qus.maxvector.model.PostgresVector
+import pl.qus.maxvector.model.EmbVector
 import pl.qus.maxvector.model.*
 import pl.qus.maxvector.service.IVectorDatabaseService
 import pl.qus.maxvector.service.IEmbeddingService
@@ -36,7 +36,7 @@ class EmbeddingGQLController {
 
     @QueryMapping
     fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> =
-        database.findClosest(PostgresVector(vec), k, measure)
+        database.findClosest(EmbVector(vec), k, measure)
 
     @QueryMapping
     suspend fun findClosest(@Argument prompt: String, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> {

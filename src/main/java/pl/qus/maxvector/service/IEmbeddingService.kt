@@ -1,8 +1,8 @@
 package pl.qus.maxvector.service
 
-import pl.qus.maxvector.model.PostgresVector
+import pl.qus.maxvector.model.EmbVector
 
 interface IEmbeddingService {
-    suspend fun getEmbedding(entries: List<String>): List<PostgresVector>
-    suspend fun getEmbedding(query: String): PostgresVector
+    suspend fun getEmbedding(entries: List<String>): List<EmbVector>
+    suspend fun getEmbedding(query: String): EmbVector
 }

@@ -23,12 +23,12 @@ type OpenAIStatus {
 
 type EmbeddingRecord {
     id: ID
-    embedding: PostgresVector!
+    embedding: EmbVector!
     label: String!
     metadata: VectorMetadata
 }
 
-type PostgresVector {
+type EmbVector {
     points: [Float!]!
 }
 
