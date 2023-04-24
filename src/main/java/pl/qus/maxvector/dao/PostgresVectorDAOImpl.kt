@@ -3,18 +3,18 @@ package pl.qus.maxvector.dao
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import pl.qus.maxvector.model.EmbVector
 import pl.qus.maxvector.model.DistanceType
+import pl.qus.maxvector.model.EmbVector
 import pl.qus.maxvector.model.EmbeddingRecord
 import pl.qus.maxvector.model.VectorMetadata
-import java.awt.Dimension
-import java.lang.IllegalStateException
+import javax.annotation.PostConstruct
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
+
 @Component
 class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager) : PostgresVectorDAO {
-    var dimensions = 2048
+    var dimensions = -1
     var tableName = "items"
 
     private val logger = LoggerFactory.getLogger(PostgresVectorDAOImpl::class.java)
@@ -33,31 +33,61 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val SQL_QUERY_ALL = "select * FROM items"
 
     private val SQL_DROP_TABLE = "DROP TABLE IF EXISTS items"
-    private val SQL_CREATE_TABLE = "CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(2048), label text)"
+    //private val SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS items (id bigserial PRIMARY KEY, embedding vector(2048), label text)"
     private val SQL_LOAD_EXTENSION = " CREATE EXTENSION vector"
 
+    @PostConstruct
+    @Transactional
+    fun init() {
+        loadExtension()
+
+        // check if table exists and try to obtain vector size from it
+        try {
+            val record = dataSource.createNativeQuery(
+                SQL_QUERY_ALL,
+                EmbeddingRecord::class.java
+            ).resultList as MutableList<EmbeddingRecord>
+            dimensions = record.firstOrNull()?.embedding?.dimension ?: -1
+            logger.debug("Vector dimension set to $dimensions")
+        } catch (ex: Exception) {
+            logger.error("Problem checking for dimensionality:${ex.message}")
+        }
+    }
+
     fun ensureDimensionality(emb: EmbVector) {
-        if(emb.dimension != dimensions)
+        if(dimensions == -1) {
+            // table wasn't initialized, gotta be recreated
+            try {
+                prepareTable("items", emb.dimension)
+                logger.error("Table of $dimensions created")
+            } catch (ex: Exception) {
+                logger.error("Problem creating table:${ex.message}")
+
+            }
+        }
+        else if(emb.dimension != dimensions)
             throw IllegalStateException("Atempt to use ${emb.dimension}-dimension vector with $dimensions-dimension db!")
+    }
+
+    @Transactional
+    fun loadExtension() {
+        try {
+            val res = dataSource.createNativeQuery(SQL_LOAD_EXTENSION).executeUpdate()
+            logger.debug("vector extension: $res")
+        } catch (ex: Exception) {
+            logger.debug("Couldn't load vector extension: ${ex.message}")
+        }
+    }
+
+    @Transactional
+    fun prepareTable(name: String, dim: Int) {
+        tableName = name
+        dimensions = dim
+        dataSource.createNativeQuery("CREATE TABLE IF NOT EXISTS items (id bigserial PRIMARY KEY, embedding vector($dim), label text)").executeUpdate()
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Transactional update methods
-
-    @Transactional
-    fun recreateTable(name: String, dim: Int) {
-        tableName = name
-        dimensions = dim
-        dataSource.createNativeQuery(SQL_DROP_TABLE).executeUpdate()
-        dataSource.createNativeQuery(SQL_CREATE_TABLE).executeUpdate()
-        dataSource.createNativeQuery(SQL_LOAD_EXTENSION).executeUpdate()
-    }
-
-    fun init(name: String, dim: Int) {
-        tableName = name
-        dimensions = dim
-        dataSource.createNativeQuery(SQL_LOAD_EXTENSION).executeUpdate()
-    }
 
     @Transactional
     override fun insert(emb: EmbeddingRecord): Boolean {
@@ -113,7 +143,7 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
             }
             DistanceType.COSINE -> {
                 dataSource.createNativeQuery(SQL_NEAREST_COSINE, EmbeddingRecord::class.java)
-                    .setParameter("emb", vec)
+                    .setParameter("emb", vec.toString())
                     .setParameter("kval", kval)
                     .resultList as MutableList<EmbeddingRecord>
             }
