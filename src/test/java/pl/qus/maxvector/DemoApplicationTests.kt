@@ -1,13 +1,25 @@
-package pl.qus.maxvector;
+package pl.qus.maxvector
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import pl.qus.maxvector.model.DistanceType
+import pl.qus.maxvector.service.IEmbeddingService
+import pl.qus.maxvector.service.IVectorDatabaseService
 
 @SpringBootTest
-class DemoApplicationTests {
+internal class DemoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Autowired
+    lateinit var openAI: IEmbeddingService
+    @Autowired
+    lateinit var embeddingService: IVectorDatabaseService
 
+    @Test
+    fun contextLoads() = runBlocking {
+        val embToFind = openAI.getEmbedding("house animal")
+
+        val distance = embeddingService.getDistance(embToFind, DistanceType.EUCLIDEAN)
+    }
 }

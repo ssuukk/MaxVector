@@ -45,4 +45,8 @@ class PostgresVectorDatabaseService : IVectorDatabaseService {
     override fun updateById(id: Long, emb: EmbVector, lab: String): Boolean {
         return postgresDAO.updateById(id, emb, lab)
     }
+
+    override fun getDistance(embToFind: EmbVector, t: DistanceType): List<Double> {
+        return postgresDAO.getDistance(embToFind, t)
+    }
 }

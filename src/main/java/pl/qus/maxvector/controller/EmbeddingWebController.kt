@@ -31,6 +31,8 @@ class EmbeddingWebController {
 
         val embToFind = openAI.getEmbedding("house animal")
 
+        val distance = embeddingService.getDistance(embToFind, DistanceType.EUCLIDEAN)
+
         model.addAttribute(
             "embeddings", // atrybut na stronie html
             embeddingService.findClosest(embToFind,5, DistanceType.EUCLIDEAN)
