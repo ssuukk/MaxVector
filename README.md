@@ -1,5 +1,7 @@
 # MaxVector
-A locally running vector database with GraphQL and REST API, with built-in methods to obtain embeddings from OpenAI and other services.
+A locally running vector database with GraphQL API, with built-in methods to obtain embeddings from OpenAI 
+and other services. Written in Kotlin using Spring, with Postgres as the storage. Vector similarity provided 
+by ultra fast algorithms of the [Faiss](https://github.com/facebookresearch/faiss) library.
 
 ## Why?
 One day I tried to get Pinecone access and they put me on a wait list! I'm too impatient, so I just created a vector database myself.
