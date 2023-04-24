@@ -144,6 +144,7 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     // Queries
 
     override fun selectClosest(vec: EmbVector, kval: Int, measure: DistanceType): List<EmbeddingRecord> {
+        ensureDimensionality(vec)
         return when(measure) {
             DistanceType.EUCLIDEAN -> {
                 dataSource.createNativeQuery(SQL_NEAREST_EUCLID, EmbeddingRecord::class.java)
@@ -167,21 +168,22 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     }
 
     override fun getDistance(vec: EmbVector, measure: DistanceType): List<Double> {
+        ensureDimensionality(vec)
         return when(measure) {
             DistanceType.EUCLIDEAN -> {
-                dataSource.createNativeQuery(SQL_DISTANCE_EUCLID, EmbeddingRecord::class.java)
+                dataSource.createNativeQuery(SQL_DISTANCE_EUCLID)
                     .setParameter("emb", vec.toString())
-                    .resultList as MutableList<Double>
+                    .resultList as List<Double>
             }
             DistanceType.COSINE -> {
-                dataSource.createNativeQuery(SQL_DISTANCE_COSINE, EmbeddingRecord::class.java)
+                dataSource.createNativeQuery(SQL_DISTANCE_COSINE)
                     .setParameter("emb", vec.toString())
-                    .resultList as MutableList<Double>
+                    .resultList as List<Double>
             }
             DistanceType.INNER_PRODUCT -> {
-                dataSource.createNativeQuery(SQL_DISTANCE_INNER, EmbeddingRecord::class.java)
+                dataSource.createNativeQuery(SQL_DISTANCE_INNER)
                     .setParameter("emb", vec.toString())
-                    .resultList as MutableList<Double>
+                    .resultList as List<Double>
             }
         }
     }

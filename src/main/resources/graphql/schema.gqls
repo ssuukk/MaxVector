@@ -2,12 +2,13 @@ type Query {
     """embeddingById(id: ID): EmbeddingRecord"""
     findClosestByVector(vec: [Float!]!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
     findClosest(prompt: String!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
-    deleteById(id: ID): Boolean!
-    updateById(id: ID, vec: [Float!]!, label: String): Boolean!
+    getDistance(vec: [Float!]!, measure: DistanceType = EUCLIDEAN): [Float!]!
 }
 
 type Mutation {
     storeEmbedding(queries: [String!]!) : OpenAIStatus!
+    deleteById(id: ID): Boolean!
+    updateById(id: ID, vec: [Float!]!, label: String): Boolean!
 }
 
 enum DistanceType {

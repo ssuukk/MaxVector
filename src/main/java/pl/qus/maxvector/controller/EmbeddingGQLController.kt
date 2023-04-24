@@ -38,18 +38,21 @@ class EmbeddingGQLController {
     fun findClosestByVector(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> =
         database.findClosest(EmbVector(vec), k, measure)
 
+    fun getDistance(@Argument vec: List<Double>, @Argument k: Int, @Argument measure: DistanceType): List<Double> =
+        database.getDistance(EmbVector(vec), measure)
+
     @QueryMapping
     suspend fun findClosest(@Argument prompt: String, @Argument k: Int, @Argument measure: DistanceType): List<EmbeddingRecord> {
         val res = openAI.getEmbedding(prompt)
         return database.findClosest(res, k, measure)
     }
 
-    @QueryMapping
+    @MutationMapping
     fun deleteById(@Argument id: Long): Boolean {
         return database.deleteById(id)
     }
 
-    @QueryMapping
+    @MutationMapping
     fun updateById(@Argument id: Long, @Argument vec: List<Double>, @Argument label: String): Boolean {
         return database.updateById(id, EmbVector(vec), label)
     }
