@@ -45,6 +45,8 @@ If you prefer to query the DB by supplying all 2048 coordinates, you can of cour
     }
 
 
+![Built-in GraphQL interface](resources/GraphQL_interface.jpg)
+
 Of course - more features will be added as necessary.
 
 # Installation
@@ -113,5 +115,6 @@ Use Gradle.
 
 # Usage
 
-Query the db with GraphQL, either by plain HTTP requests or any GraphQL client, like [Apollo](https://github.com/apollographql).
+Query the db with GraphQL, either by plain HTTP requests or any GraphQL client, like [Apollo](https://github.com/apollographql)
+or the built-in web interface on port [8080](http://localhost:8080/graphiql?path=/graphql) of your machine.
 Check `src\main\resources\graphql\schema.gqls` for currently implemented queries and mutations
