@@ -49,6 +49,11 @@ class EmbeddingGQLController {
         return database.deleteById(id)
     }
 
+    @QueryMapping
+    fun updateById(@Argument id: Long, @Argument vec: List<Double>, @Argument label: String): Boolean {
+        return database.updateById(id, EmbVector(vec), label)
+    }
+
     @MutationMapping
     suspend fun storeEmbedding(@Argument queries:List<String>) : OpenAIStatus {
         return try {

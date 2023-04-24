@@ -3,6 +3,7 @@ type Query {
     findClosestByVector(vec: [Float!]!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
     findClosest(prompt: String!, k: Int!, measure: DistanceType = EUCLIDEAN): [EmbeddingRecord]
     deleteById(id: ID): Boolean!
+    updateById(id: ID, vec: [Float!]!, label: String): Boolean!
 }
 
 type Mutation {
@@ -29,7 +30,7 @@ type EmbeddingRecord {
 }
 
 type EmbVector {
-    points: [Float!]!
+    coords: [Float!]!
 }
 
 type VectorMetadata {

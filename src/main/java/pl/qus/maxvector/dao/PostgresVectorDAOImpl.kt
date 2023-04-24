@@ -35,7 +35,11 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val SQL_DROP_TABLE = "DROP TABLE IF EXISTS items"
     //private val SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS items (id bigserial PRIMARY KEY, embedding vector(2048), label text)"
     private val SQL_LOAD_EXTENSION = " CREATE EXTENSION vector"
+    private val SQL_UPDATE_BY_ID = "UPDATE items SET embedding = CAST(:emb AS vector), label = :lab WHERE id = :id"
 
+    private val SQL_DIST_EUCLID = "SELECT embedding <-> '[3,1,2]' AS distance FROM items"
+    private val SQL_DIST_INNER = "SELECT (embedding <#> '[3,1,2]') * -1 AS inner_product FROM items"
+    private val SQL_DIST_COSINE = "SELECT 1 - (embedding <=> '[3,1,2]') AS cosine_similarity FROM items"
     @PostConstruct
     @Transactional
     fun init() {
@@ -123,12 +127,21 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     }
 
     @Transactional
-    override fun deleteVectorById(id: Long): Boolean {
+    override fun deleteById(id: Long): Boolean {
 //        val test = dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).toString()
 //        logger.debug("======================================== $test")
         return dataSource.createNativeQuery(SQL_DELETE_BY_ID).setParameter("id", id).executeUpdate() > 0
     }
 
+    // UPDATE items SET embedding = '[1,2,3]' WHERE id = 1
+    @Transactional
+    override fun updateById(id: Long, emb: EmbVector, lab: String): Boolean {
+        return dataSource.createNativeQuery(SQL_UPDATE_BY_ID)
+            .setParameter("id", id)
+            .setParameter("emb", emb.toString())
+            .setParameter("label", lab)
+            .executeUpdate() > 0
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Queries

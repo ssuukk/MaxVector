@@ -7,11 +7,12 @@ import pl.qus.maxvector.model.VectorMetadata
 
 interface PostgresVectorDAO {
 
-    fun deleteVectorById(id: Long): Boolean
+    fun deleteById(id: Long): Boolean
     fun upsert(emb: EmbeddingRecord): Boolean
     fun insert(emb: EmbeddingRecord): Boolean
     fun upsertAll(emb: List<EmbeddingRecord>): Boolean
     fun selectClosest(vec: EmbVector, kval: Int, measure: DistanceType): List<EmbeddingRecord>
     fun findAll(): List<EmbeddingRecord>
     fun getMetadataById(id: Long): VectorMetadata
+    fun updateById(id: Long, emb: EmbVector, lab: String): Boolean
 }

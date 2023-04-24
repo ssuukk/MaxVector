@@ -12,4 +12,5 @@ interface IVectorDatabaseService {
     fun deleteById(id: Long): Boolean
     fun findClosest(ev: EmbVector, k: Int, t: DistanceType): List<EmbeddingRecord>
     fun getMetadataById(id: Long): VectorMetadata
+    fun updateById(id: Long, emb: EmbVector, lab: String): Boolean
 }

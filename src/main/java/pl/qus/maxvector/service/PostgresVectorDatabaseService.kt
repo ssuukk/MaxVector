@@ -39,6 +39,10 @@ class PostgresVectorDatabaseService : IVectorDatabaseService {
     }
 
     override fun deleteById(id: Long): Boolean {
-        return postgresDAO.deleteVectorById(id)
+        return postgresDAO.deleteById(id)
+    }
+
+    override fun updateById(id: Long, emb: EmbVector, lab: String): Boolean {
+        return postgresDAO.updateById(id, emb, lab)
     }
 }

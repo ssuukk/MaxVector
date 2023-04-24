@@ -17,9 +17,9 @@ class EmbeddingWebController {
 
     @Autowired
     lateinit var openAI: IEmbeddingService
-
     @Autowired
     lateinit var embeddingService: IVectorDatabaseService
+
     @GetMapping("/emb") // w jakiej ścieżce ukaze się stona
     fun findEmbeddings(model: Model): String {
         model.addAttribute("embeddings", embeddingService.findAll()) // atrybut na stronie html

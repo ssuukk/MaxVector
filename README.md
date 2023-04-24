@@ -30,7 +30,7 @@ Or it could lookup embeddings in your database by prompt, first obtaining the em
           example
         }
         embedding {
-          points
+          coords
         }
       }
     }
@@ -117,4 +117,6 @@ Use Gradle.
 
 Query the db with GraphQL, either by plain HTTP requests or any GraphQL client, like [Apollo](https://github.com/apollographql)
 or the built-in web interface on port [8080](http://localhost:8080/graphiql?path=/graphql) of your machine.
-Check `src\main\resources\graphql\schema.gqls` for currently implemented queries and mutations
+Check `src\main\resources\graphql\schema.gqls` for currently implemented queries and mutations.
+
+Note that first insert into the database will determine dimensionality of the vectors it holds.

@@ -1,10 +1,10 @@
 package pl.qus.maxvector.model
 
-class EmbVector(var points: List<Double> = listOf()) {
-    override fun toString(): String = points.joinToString(",","[","]")
+class EmbVector(var coords: List<Double> = listOf()) {
+    override fun toString(): String = coords.joinToString(",","[","]")
 
     operator fun get(i: Int):Double {
-        return points[i]
+        return coords[i]
     }
 
 //    operator fun set(i: Int, d: Double) {
@@ -12,7 +12,7 @@ class EmbVector(var points: List<Double> = listOf()) {
 //    }
 
     val dimension: Int
-        get() = points.size
+        get() = coords.size
     
     companion object {
         @JvmStatic
