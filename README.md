@@ -12,6 +12,7 @@ embeddings and query closest ones by distance (using euclidean, cosine or inner 
 by using GraphQL for fine-grained field selection. Example of storing OpenAI embeddings for dog, shark and parrot using
 Python code:
 
+```python
     get_closest_vectors = """mutation storeEmbedding {
     storeEmbedding(queries: ["dog", "shark", "parrot"]) {
     status
@@ -28,6 +29,7 @@ Python code:
     status = data["status"]
     error = data["error"]
     count = data["count"]
+```
 
 ## Any other features?
 Oh, sure. It can obtain embeddings automagically for you! With GraphQL interface it's enough to call this mutation to 
