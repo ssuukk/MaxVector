@@ -35,6 +35,7 @@ Python code:
 Oh, sure. It can obtain embeddings automagically for you! With GraphQL interface it's enough to call this mutation to 
 obtain embedding vectors for a list of words from OpenAI **straight into your database**:
 
+```GraphQL
     mutation storeEmbedding {
       storeEmbedding(queries: ["dog", "shark", "parrot"]) {
         status
@@ -42,9 +43,11 @@ obtain embedding vectors for a list of words from OpenAI **straight into your da
         count
       }
     }
+```
 
 Or it could lookup embeddings in your database by prompt, first obtaining the embedding from OpenAI, like here:
 
+```GraphQL
     query findClosest {
       findClosest(prompt: "house animal", k: 3, measure: COSINE) {
         id
@@ -57,16 +60,18 @@ Or it could lookup embeddings in your database by prompt, first obtaining the em
         }
       }
     }
+```
 
 If you prefer to query the DB by supplying all 2048 coordinates, you can of course do that, too:
 
+```GraphQL
     query closestVectors {
       findClosestByVector(vec:[1.5, 3.45, 32.3, (2045 more coords...)], k: 3, measure: EUCLIDEAN) {
         id
         label
       }  
     }
-
+```
 
 ![Built-in GraphQL interface](resources/GraphQL_interface.jpg)
 
@@ -79,43 +84,59 @@ All you need is a local instance of Postgres with [pgvector](https://github.com/
 
 On any Debian-ish Linux install Postgres by:
 
+```shell
     $ sudo apt-get install postgresql
+```
 
 Then configure admin user and password:
 
+```shell
     $ sudo -u postgres psql postgres
+```
 
 And in Postgres shell:
 
+```shell
     postgres=# \password postgres
+```
 
 To set up password for the postgres user, which is empty by default. You can then exit Postgres shell, and create
 a new database user - this is the user you will need to put in `application.properties` file later:
 
+```shell
     $ sudo -u postgres createuser --interactive --password user12
     Shall the new role be a superuser? (y/n) n
     Shall the new role be allowed to create databases? (y/n) y
     Shall the new role be allowed to create more new roles? (y/n) n
     Password: 
+```
 
 Create a db - whatever name you choose you will need to use it in `application.properties` file later:
 
+```shell
     $ sudo -u postgres createdb testdb -O user12
+```
 
 Finally edit your postgres config file to trust locally running MaxVector:
 
+```shell
     $ sudo vi /etc/postgresql/9.5/main/pg_hba.conf
+```
 
 Edit the file like this:
 
+```shell
     # "local" is for Unix domain socket connections only
     local   all             all                                     trust
     # IPv4 local connections:
     host    all             all             127.0.0.1/32            trust
+```
 
 And restart postgres service:
 
+```shell
     $ sudo service postgresql restart
+```
 
 ## Installing Postgres vector extension
 
@@ -161,6 +182,7 @@ speed.
 
 Lookup k closest vectors by obtaining the embedding first from selected embedding API:
 
+```GraphQL
     query findClosest {
         findClosest(prompt: "house animal", k: 3, measure: INNER_PRODUCT) {
             id
@@ -173,14 +195,17 @@ Lookup k closest vectors by obtaining the embedding first from selected embeddin
             }
         }
     }
+```
 
 ## Obtain distance
 
 Get distances from selected vector:
 
+```GraphQL
     query getDistance {
         getDistance(vec: [243, 323, 23,...], measure: EUCLIDEAN)
     }
+```
 
 ## Insert vector
 
@@ -188,6 +213,7 @@ Get distances from selected vector:
 
 You can store new vectors by obtaining the embedding first from selected embedding API:
 
+```GraphQL
     mutation storeEmbedding {
         storeEmbedding(queries: ["dog", "shark", "parrot"]) {
             status
@@ -195,6 +221,7 @@ You can store new vectors by obtaining the embedding first from selected embeddi
             count
         }
     }
+```
 
 ## Upsert
 
@@ -202,25 +229,31 @@ You can store new vectors by obtaining the embedding first from selected embeddi
 
 Vector with a specific ID can be updated by:
 
+```GraphQL
     mutation update {
         updateById(id: 23, vec: [2.3, 2.6,...], label: "New label")
     }
+```
 
 ## Delete
 
 To delete a vector with particular ID:
 
+```GraphQL
     mutation deleteById {
         deleteById(id: 1)
     }
+```
 
 ## Create index
 
 You can create an index with all available measures:
 
+```GraphQL
     mutation cosineIndex {
         createIndex(lists: 500, measure: COSINE) {
             status
             error
         }
     }
+```
