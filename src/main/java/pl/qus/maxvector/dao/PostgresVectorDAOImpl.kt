@@ -37,9 +37,9 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val SQL_LOAD_EXTENSION = "CREATE EXTENSION vector"
     private val SQL_UPDATE_BY_ID = "UPDATE items SET embedding = CAST(:emb AS vector), label = :lab WHERE id = :id"
 
-    private val SQL_CREATE_INDEX_EUCLID = "CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = :lists)"
-    private val SQL_CREATE_INDEX_INNER = "CREATE INDEX ON items USING ivfflat (embedding vector_ip_ops) WITH (lists = :lists)"
-    private val SQL_CREATE_INDEX_COSINE = "CREATE INDEX ON items USING ivfflat (embedding vector_cosine_ops) WITH (lists = :lists)"
+    private val SQL_CREATE_INDEX_EUCLID = "CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = :li)"
+    private val SQL_CREATE_INDEX_INNER = "CREATE INDEX ON items USING ivfflat (embedding vector_ip_ops) WITH (lists = :li)"
+    private val SQL_CREATE_INDEX_COSINE = "CREATE INDEX ON items USING ivfflat (embedding vector_cosine_ops) WITH (lists = :li)"
 
     @PostConstruct
     @Transactional
@@ -94,8 +94,6 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     ///////////////////////////////////////////////////////////////////////////
     // Transactional update methods
 
-    // create index
-
     @Transactional
     override fun insert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
@@ -146,24 +144,20 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
             .executeUpdate() > 0
     }
 
+    @Transactional
     override fun createIndex(lists: Int, measure: DistanceType): Boolean {
-        return when(measure) {
-            DistanceType.EUCLIDEAN -> {
-                dataSource.createNativeQuery(SQL_CREATE_INDEX_EUCLID, EmbeddingRecord::class.java)
-                    .setParameter("lists", lists)
-                    .executeUpdate() > 0
-            }
-            DistanceType.COSINE -> {
-                dataSource.createNativeQuery(SQL_CREATE_INDEX_COSINE, EmbeddingRecord::class.java)
-                    .setParameter("lists", lists)
-                    .executeUpdate() > 0
-            }
-            DistanceType.INNER_PRODUCT -> {
-                dataSource.createNativeQuery(SQL_CREATE_INDEX_INNER, EmbeddingRecord::class.java)
-                    .setParameter("lists", lists)
-                    .executeUpdate() > 0
-            }
-        }
+        if(dimensions > 2000)
+            throw java.lang.IllegalStateException("column cannot have more than 2000 dimensions for index")
+
+        // parameter substitution doesn't work in this case (https://github.com/brianc/node-postgres/issues/539), so manually:
+
+        val stat = when(measure) {
+            DistanceType.EUCLIDEAN -> SQL_CREATE_INDEX_EUCLID
+            DistanceType.COSINE -> SQL_CREATE_INDEX_COSINE
+            DistanceType.INNER_PRODUCT -> SQL_CREATE_INDEX_INNER
+        }.replace(":li", lists.toString())
+
+        return dataSource.createNativeQuery(stat).executeUpdate() > 0
     }
 
 

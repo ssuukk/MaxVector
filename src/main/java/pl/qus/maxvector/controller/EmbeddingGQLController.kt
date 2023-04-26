@@ -79,7 +79,11 @@ class EmbeddingGQLController {
     }
 
     @MutationMapping
-    fun createIndex(@Argument lists: Int, @Argument measure: DistanceType): Boolean {
-        return database.createIndex(lists, measure)
+    fun createIndex(@Argument lists: Int, @Argument measure: DistanceType): OpenAIStatus {
+        return try {
+            OpenAIStatus(database.createIndex(lists, measure),"", 0)
+        } catch (ex: Exception) {
+            OpenAIStatus(false, ex.message ?: "Unknown error", 0)
+        }
     }
 }

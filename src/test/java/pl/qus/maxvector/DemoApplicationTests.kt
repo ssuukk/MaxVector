@@ -18,11 +18,17 @@ internal class DemoApplicationTests {
     lateinit var embeddingService: IVectorDatabaseService
 
     @Test
-    fun contextLoads() = runBlocking {
+    fun testDistance() = runBlocking {
         val embToFind = openAI.getEmbedding("house animal")
 
         //val embToFind = EmbVector(listOf(1.3, 1.5, 1.7))
 
         val distance = embeddingService.getDistance(embToFind, DistanceType.EUCLIDEAN)
+        println("Odległości:$distance")
+    }
+
+    @Test
+    fun testIndex() {
+        embeddingService.createIndex(200, DistanceType.COSINE)
     }
 }

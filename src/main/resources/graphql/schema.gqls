@@ -9,7 +9,7 @@ type Mutation {
     storeEmbedding(queries: [String!]!) : OpenAIStatus!
     deleteById(id: ID): Boolean!
     updateById(id: ID, vec: [Float!]!, label: String): Boolean!
-    createIndex(lists: Int!, measure: DistanceType = EUCLIDEAN): Boolean!
+    createIndex(lists: Int!, measure: DistanceType = EUCLIDEAN): OpenAIStatus!
 }
 
 enum DistanceType {

@@ -198,5 +198,8 @@ To delete a vector with particular ID:
 You can create an index with all available measures:
 
     mutation cosineIndex {
-        createIndex(lists: 500, measure: COSINE)
+        createIndex(lists: 500, measure: COSINE) {
+            status
+            error
+        }
     }
