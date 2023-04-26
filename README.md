@@ -10,7 +10,7 @@ One day I tried to get Pinecone access and they put me on a wait list! I'm too i
 MaxVector is a vector database created for AI applications, so you can use it exactly like any other vector db - to store your
 embeddings and query closest ones by distance (using euclidean, cosine or inner product) or metadata and query it
 by using GraphQL for fine-grained field selection. Example of storing OpenAI embeddings for dog, shark and parrot using
-Python code:
+plain Python code:
 
 ```python
     get_closest_vectors = """mutation storeEmbedding {
@@ -171,12 +171,14 @@ You can lookup k closest vectors by supplying its coordinates with float array a
 COSINE, INNER_PRODUCT). Defaults to EUCLIDEAN. For normalized vectors (like OpenAI embeddings) choose INNER_PRODUCT for
 speed.
 
+```GraphQL
     query closestVectors {
         findClosestByVector(vec: [1.5, 3.45, 32.3,...], k: 3, measure: COSINE) {
             id
             label
         }
     }
+```
 
 ## Query closest vector by text
 
