@@ -37,6 +37,10 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     private val SQL_LOAD_EXTENSION = "CREATE EXTENSION vector"
     private val SQL_UPDATE_BY_ID = "UPDATE items SET embedding = CAST(:emb AS vector), label = :lab WHERE id = :id"
 
+    private val SQL_CREATE_INDEX_EUCLID = "CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = :lists)"
+    private val SQL_CREATE_INDEX_INNER = "CREATE INDEX ON items USING ivfflat (embedding vector_ip_ops) WITH (lists = :lists)"
+    private val SQL_CREATE_INDEX_COSINE = "CREATE INDEX ON items USING ivfflat (embedding vector_cosine_ops) WITH (lists = :lists)"
+
     @PostConstruct
     @Transactional
     fun init() {
@@ -90,6 +94,8 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
     ///////////////////////////////////////////////////////////////////////////
     // Transactional update methods
 
+    // create index
+
     @Transactional
     override fun insert(emb: EmbeddingRecord): Boolean {
         ensureDimensionality(emb.embedding)
@@ -140,8 +146,31 @@ class PostgresVectorDAOImpl @Autowired constructor(val dataSource: EntityManager
             .executeUpdate() > 0
     }
 
+    override fun createIndex(lists: Int, measure: DistanceType): Boolean {
+        return when(measure) {
+            DistanceType.EUCLIDEAN -> {
+                dataSource.createNativeQuery(SQL_CREATE_INDEX_EUCLID, EmbeddingRecord::class.java)
+                    .setParameter("lists", lists)
+                    .executeUpdate() > 0
+            }
+            DistanceType.COSINE -> {
+                dataSource.createNativeQuery(SQL_CREATE_INDEX_COSINE, EmbeddingRecord::class.java)
+                    .setParameter("lists", lists)
+                    .executeUpdate() > 0
+            }
+            DistanceType.INNER_PRODUCT -> {
+                dataSource.createNativeQuery(SQL_CREATE_INDEX_INNER, EmbeddingRecord::class.java)
+                    .setParameter("lists", lists)
+                    .executeUpdate() > 0
+            }
+        }
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////
     // Queries
+
+    // getById
 
     override fun selectClosest(vec: EmbVector, kval: Int, measure: DistanceType): List<EmbeddingRecord> {
         ensureDimensionality(vec)

@@ -30,6 +30,10 @@ class PostgresVectorDatabaseService : IVectorDatabaseService {
         return postgresDAO.getMetadataById(id)
     }
 
+    override fun getDistance(embToFind: EmbVector, t: DistanceType):List<Double> {
+        return postgresDAO.getDistance(embToFind, t)
+    }
+
     override fun upsertAll(embs: List<EmbeddingRecord>): Boolean {
         return postgresDAO.upsertAll(embs)
     }
@@ -46,7 +50,7 @@ class PostgresVectorDatabaseService : IVectorDatabaseService {
         return postgresDAO.updateById(id, emb, lab)
     }
 
-    override fun getDistance(embToFind: EmbVector, t: DistanceType):List<Double> {
-        return postgresDAO.getDistance(embToFind, t)
+    override fun createIndex(lists: Int, t: DistanceType): Boolean {
+        return postgresDAO.createIndex(lists, t)
     }
 }

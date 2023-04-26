@@ -14,4 +14,5 @@ interface IVectorDatabaseService {
     fun getMetadataById(id: Long): VectorMetadata
     fun updateById(id: Long, emb: EmbVector, lab: String): Boolean
     fun getDistance(embToFind: EmbVector, euclidean: DistanceType): List<Double>
+    fun createIndex(lists: Int, t: DistanceType): Boolean
 }

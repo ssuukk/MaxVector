@@ -115,10 +115,88 @@ Edit `src\main\resources\application.properties` file, add `openAIapiKey` line w
 
 Use Gradle.
 
-# Usage
+# Reference
 
 Query the db with GraphQL, either by plain HTTP requests or any GraphQL client, like [Apollo](https://github.com/apollographql)
 or the built-in web interface on port [8080](http://localhost:8080/graphiql?path=/graphql) of your machine.
 Check `src\main\resources\graphql\schema.gqls` for currently implemented queries and mutations.
 
 Note that first insert into the database will determine dimensionality of the vectors it holds.
+
+## Query closest vectors by vector
+
+You can lookup k closest vectors by supplying its coordinates with float array and adding an optional measure (EUCLIDEAN,
+COSINE, INNER_PRODUCT). Defaults to EUCLIDEAN. For normalized vectors (like OpenAI embeddings) choose INNER_PRODUCT for
+speed.
+
+    query closestVectors {
+        findClosestByVector(vec: [1.5, 3.45, 32.3,...], k: 3, measure: COSINE) {
+            id
+            label
+        }
+    }
+
+## Query closest vector by text
+
+Lookup k closest vectors by obtaining the embedding first from selected embedding API:
+
+    query findClosest {
+        findClosest(prompt: "house animal", k: 3, measure: INNER_PRODUCT) {
+            id
+            label
+            metadata {
+                example
+            }
+            embedding {
+                coords
+            }
+        }
+    }
+
+## Obtain distance
+
+Get distances from selected vector:
+
+    query getDistance {
+        getDistance(vec: [243, 323, 23,...], measure: EUCLIDEAN)
+    }
+
+## Insert vector
+
+## Insert embeddings
+
+You can store new vectors by obtaining the embedding first from selected embedding API:
+
+    mutation storeEmbedding {
+        storeEmbedding(queries: ["dog", "shark", "parrot"]) {
+            status
+            error
+            count
+        }
+    }
+
+## Upsert
+
+## Update
+
+Vector with a specific ID can be updated by:
+
+    mutation update {
+        updateById(id: 23, vec: [2.3, 2.6,...], label: "New label")
+    }
+
+## Delete
+
+To delete a vector with particular ID:
+
+    mutation deleteById {
+        deleteById(id: 1)
+    }
+
+## Create index
+
+You can create an index with all available measures:
+
+    mutation cosineIndex {
+        createIndex(lists: 500, measure: COSINE)
+    }

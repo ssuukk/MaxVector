@@ -16,4 +16,5 @@ interface PostgresVectorDAO {
     fun getMetadataById(id: Long): VectorMetadata
     fun updateById(id: Long, emb: EmbVector, lab: String): Boolean
     fun getDistance(vec: EmbVector, measure: DistanceType): List<Double>
+    fun createIndex(lists: Int, measure: DistanceType): Boolean
 }
