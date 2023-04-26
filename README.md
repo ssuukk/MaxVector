@@ -13,6 +13,7 @@ by using GraphQL for fine-grained field selection. Example of storing OpenAI emb
 plain Python code:
 
 ```python
+    url = "http://localhost:8080/graphql"
     get_closest_vectors = """mutation storeEmbedding {
     storeEmbedding(queries: ["dog", "shark", "parrot"]) {
     status
